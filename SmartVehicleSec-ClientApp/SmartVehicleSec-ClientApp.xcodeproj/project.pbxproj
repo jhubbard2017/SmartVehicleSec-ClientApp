@@ -7,8 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EFA5DEA71F283D4300945A4B /* setup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EFA5DEA61F283D4300945A4B /* setup.storyboard */; };
+		EFA5DEA91F283D9F00945A4B /* SetupInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA5DEA81F283D9F00945A4B /* SetupInformationViewController.swift */; };
+		EFA5DEAB1F28473F00945A4B /* utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA5DEAA1F28473F00945A4B /* utilities.swift */; };
+		EFA5DEAD1F2855DD00945A4B /* SetupSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA5DEAC1F2855DD00945A4B /* SetupSuccessViewController.swift */; };
 		EFCED4C31F27BD63002E9EA3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFCED4C21F27BD63002E9EA3 /* AppDelegate.swift */; };
-		EFCED4C51F27BD63002E9EA3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFCED4C41F27BD63002E9EA3 /* ViewController.swift */; };
+		EFCED4C51F27BD63002E9EA3 /* FirstStartController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFCED4C41F27BD63002E9EA3 /* FirstStartController.swift */; };
 		EFCED4C81F27BD63002E9EA3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EFCED4C61F27BD63002E9EA3 /* Main.storyboard */; };
 		EFCED4CA1F27BD63002E9EA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFCED4C91F27BD63002E9EA3 /* Assets.xcassets */; };
 		EFCED4CD1F27BD63002E9EA3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EFCED4CB1F27BD63002E9EA3 /* LaunchScreen.storyboard */; };
@@ -34,9 +38,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EFA5DEA61F283D4300945A4B /* setup.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = setup.storyboard; sourceTree = "<group>"; };
+		EFA5DEA81F283D9F00945A4B /* SetupInformationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupInformationViewController.swift; sourceTree = "<group>"; };
+		EFA5DEAA1F28473F00945A4B /* utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = utilities.swift; sourceTree = "<group>"; };
+		EFA5DEAC1F2855DD00945A4B /* SetupSuccessViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupSuccessViewController.swift; sourceTree = "<group>"; };
 		EFCED4BF1F27BD63002E9EA3 /* SmartVehicleSec-ClientApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SmartVehicleSec-ClientApp.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFCED4C21F27BD63002E9EA3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		EFCED4C41F27BD63002E9EA3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		EFCED4C41F27BD63002E9EA3 /* FirstStartController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstStartController.swift; sourceTree = "<group>"; };
 		EFCED4C71F27BD63002E9EA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		EFCED4C91F27BD63002E9EA3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EFCED4CC1F27BD63002E9EA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -74,6 +82,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EFA5DEA41F283CCC00945A4B /* First Start Components */ = {
+			isa = PBXGroup;
+			children = (
+				EFCED4C41F27BD63002E9EA3 /* FirstStartController.swift */,
+				EFCED4C61F27BD63002E9EA3 /* Main.storyboard */,
+			);
+			name = "First Start Components";
+			sourceTree = "<group>";
+		};
+		EFA5DEA51F283D1200945A4B /* Set Up Components */ = {
+			isa = PBXGroup;
+			children = (
+				EFA5DEA61F283D4300945A4B /* setup.storyboard */,
+				EFA5DEA81F283D9F00945A4B /* SetupInformationViewController.swift */,
+				EFA5DEAC1F2855DD00945A4B /* SetupSuccessViewController.swift */,
+			);
+			name = "Set Up Components";
+			sourceTree = "<group>";
+		};
 		EFCED4B61F27BD62002E9EA3 = {
 			isa = PBXGroup;
 			children = (
@@ -97,12 +124,13 @@
 		EFCED4C11F27BD63002E9EA3 /* SmartVehicleSec-ClientApp */ = {
 			isa = PBXGroup;
 			children = (
+				EFA5DEA51F283D1200945A4B /* Set Up Components */,
+				EFA5DEA41F283CCC00945A4B /* First Start Components */,
 				EFCED4C21F27BD63002E9EA3 /* AppDelegate.swift */,
-				EFCED4C41F27BD63002E9EA3 /* ViewController.swift */,
-				EFCED4C61F27BD63002E9EA3 /* Main.storyboard */,
 				EFCED4C91F27BD63002E9EA3 /* Assets.xcassets */,
 				EFCED4CB1F27BD63002E9EA3 /* LaunchScreen.storyboard */,
 				EFCED4CE1F27BD63002E9EA3 /* Info.plist */,
+				EFA5DEAA1F28473F00945A4B /* utilities.swift */,
 			);
 			path = "SmartVehicleSec-ClientApp";
 			sourceTree = "<group>";
@@ -235,6 +263,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EFA5DEA71F283D4300945A4B /* setup.storyboard in Resources */,
 				EFCED4CD1F27BD63002E9EA3 /* LaunchScreen.storyboard in Resources */,
 				EFCED4CA1F27BD63002E9EA3 /* Assets.xcassets in Resources */,
 				EFCED4C81F27BD63002E9EA3 /* Main.storyboard in Resources */,
@@ -262,8 +291,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EFCED4C51F27BD63002E9EA3 /* ViewController.swift in Sources */,
+				EFA5DEAD1F2855DD00945A4B /* SetupSuccessViewController.swift in Sources */,
+				EFCED4C51F27BD63002E9EA3 /* FirstStartController.swift in Sources */,
 				EFCED4C31F27BD63002E9EA3 /* AppDelegate.swift in Sources */,
+				EFA5DEAB1F28473F00945A4B /* utilities.swift in Sources */,
+				EFA5DEA91F283D9F00945A4B /* SetupInformationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -518,6 +550,7 @@
 				EFCED4E91F27BD63002E9EA3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		EFCED4EA1F27BD63002E9EA3 /* Build configuration list for PBXNativeTarget "SmartVehicleSec-ClientAppTests" */ = {
 			isa = XCConfigurationList;
@@ -526,6 +559,7 @@
 				EFCED4EC1F27BD63002E9EA3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		EFCED4ED1F27BD63002E9EA3 /* Build configuration list for PBXNativeTarget "SmartVehicleSec-ClientAppUITests" */ = {
 			isa = XCConfigurationList;
@@ -534,6 +568,7 @@
 				EFCED4EF1F27BD63002E9EA3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

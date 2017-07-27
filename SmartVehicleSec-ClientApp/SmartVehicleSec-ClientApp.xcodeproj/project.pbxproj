@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EF6368651F2995D1007E3788 /* security_client.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6368641F2995D1007E3788 /* security_client.swift */; };
 		EFA5DEA71F283D4300945A4B /* setup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EFA5DEA61F283D4300945A4B /* setup.storyboard */; };
 		EFA5DEA91F283D9F00945A4B /* SetupInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA5DEA81F283D9F00945A4B /* SetupInformationViewController.swift */; };
 		EFA5DEAB1F28473F00945A4B /* utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA5DEAA1F28473F00945A4B /* utilities.swift */; };
@@ -38,6 +39,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EF6368641F2995D1007E3788 /* security_client.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = security_client.swift; sourceTree = "<group>"; };
+		EF6368661F299D46007E3788 /* GR-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GR-Bridging-Header.h"; sourceTree = "<group>"; };
 		EFA5DEA61F283D4300945A4B /* setup.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = setup.storyboard; sourceTree = "<group>"; };
 		EFA5DEA81F283D9F00945A4B /* SetupInformationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupInformationViewController.swift; sourceTree = "<group>"; };
 		EFA5DEAA1F28473F00945A4B /* utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = utilities.swift; sourceTree = "<group>"; };
@@ -82,6 +85,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EF6368631F299597007E3788 /* Back End Source */ = {
+			isa = PBXGroup;
+			children = (
+				EF6368641F2995D1007E3788 /* security_client.swift */,
+				EF6368661F299D46007E3788 /* GR-Bridging-Header.h */,
+			);
+			name = "Back End Source";
+			sourceTree = "<group>";
+		};
 		EFA5DEA41F283CCC00945A4B /* First Start Components */ = {
 			isa = PBXGroup;
 			children = (
@@ -124,6 +136,7 @@
 		EFCED4C11F27BD63002E9EA3 /* SmartVehicleSec-ClientApp */ = {
 			isa = PBXGroup;
 			children = (
+				EF6368631F299597007E3788 /* Back End Source */,
 				EFA5DEA51F283D1200945A4B /* Set Up Components */,
 				EFA5DEA41F283CCC00945A4B /* First Start Components */,
 				EFCED4C21F27BD63002E9EA3 /* AppDelegate.swift */,
@@ -296,6 +309,7 @@
 				EFCED4C31F27BD63002E9EA3 /* AppDelegate.swift in Sources */,
 				EFA5DEAB1F28473F00945A4B /* utilities.swift in Sources */,
 				EFA5DEA91F283D9F00945A4B /* SetupInformationViewController.swift in Sources */,
+				EF6368651F2995D1007E3788 /* security_client.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -396,6 +410,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = "SmartVehicleSec-ClientApp/GR-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

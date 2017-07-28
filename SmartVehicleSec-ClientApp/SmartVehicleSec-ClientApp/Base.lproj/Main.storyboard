@@ -12,7 +12,7 @@
         <!--First Start Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="first_start_controller" id="BYZ-38-t0r" customClass="FirstStartController" customModule="SmartVehicleSec_ClientApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="first_start_view_controller" id="BYZ-38-t0r" customClass="FirstStartController" customModule="SmartVehicleSec_ClientApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -32,7 +32,7 @@
                                 <rect key="frame" x="44" y="371" width="287" height="133"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="14"/>
-                                <color key="textColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hWk-cu-Ynd">
@@ -48,18 +48,16 @@
                                 </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="lock-icon" translatesAutoresizingMaskIntoConstraints="NO" id="rg4-oJ-fRB">
-                                <rect key="frame" x="85" y="167" width="205" height="185"/>
+                                <rect key="frame" x="92" y="167" width="191" height="185"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
+                        <color key="backgroundColor" red="0.23963730569948183" green="0.23963730569948183" blue="0.23963730569948183" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     </view>
-                    <connections>
-                        <outlet property="get_started_btn" destination="hWk-cu-Ynd" id="Pe6-mY-mtk"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="57" y="115"/>
+            <point key="canvasLocation" x="56.799999999999997" y="114.69265367316342"/>
         </scene>
     </scenes>
     <resources>

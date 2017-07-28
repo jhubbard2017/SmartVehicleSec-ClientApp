@@ -8,12 +8,19 @@
 
 import UIKit
 
+var sock_client = SocketClient(name: "", password: "", ip: "", fwd_ip: "", port: 0)
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var app_utils = AppUtilities()
-
+    
+    enum appLaunchStatus: Int {
+        case firstLaunch = 0, notFirstLaunch
+    }
+    
+    let _LAUNCH_KEY = "LAUNCH_KEY"
+    let _SOCKET_KEY = "SOCKET_KEY"
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -28,6 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        self.save_data()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -36,12 +44,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        var initialViewController: UIViewController!
+        
+        let objects = UserDefaults.standard
+        if objects.integer(forKey: _LAUNCH_KEY) == appLaunchStatus.firstLaunch.rawValue {
+            let main_sb = UIStoryboard(name: "Main", bundle: nil)
+            initialViewController = main_sb.instantiateViewController(withIdentifier: "first_start_view_controller") as! FirstStartController
+            
+        } else if objects.integer(forKey: _LAUNCH_KEY) == appLaunchStatus.notFirstLaunch.rawValue {
+            self.load_data()
+            if sock_client.device_is_set() {
+                // Set dashboard view controller
+            } else {
+                let setup_sb = UIStoryboard(name: "setup", bundle: nil)
+                initialViewController = setup_sb.instantiateViewController(withIdentifier: "setup_information_view_controller") as! SetupInformationViewController
+            }
+        }
+        
+        if initialViewController != nil {
+            self.window?.rootViewController = initialViewController
+            self.window?.makeKeyAndVisible()
+        }
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        // Stop session
+        self.save_data()
     }
-
-
+    
+    func save_data() {
+        /* Saves current app data */
+        let sock_data = NSKeyedArchiver.archivedData(withRootObject: sock_client)
+        let encArray: [Data] = [sock_data]
+        UserDefaults.standard.set(encArray, forKey: _SOCKET_KEY)
+        UserDefaults.standard.synchronize()
+    }
+    
+    func load_data() {
+        /* Loads current data in user defaults */
+        if let data: [Data] = UserDefaults.standard.object(forKey: _SOCKET_KEY) as? [Data] {
+            sock_client = NSKeyedUnarchiver.unarchiveObject(with: data[0] as Data) as! SocketClient
+        }
+    }
 }
 

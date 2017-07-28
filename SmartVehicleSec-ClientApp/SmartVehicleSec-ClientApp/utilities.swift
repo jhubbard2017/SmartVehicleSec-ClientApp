@@ -60,7 +60,7 @@ class AppUtilities {
          
          The alert actions for this method are only default action 
          */
-        let alert = UIAlertController(title: "Alert", message: "Message", preferredStyle: UIAlertControllerStyle.alert)
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.default, handler: nil))
         controller.present(alert, animated: true, completion: nil)
     }

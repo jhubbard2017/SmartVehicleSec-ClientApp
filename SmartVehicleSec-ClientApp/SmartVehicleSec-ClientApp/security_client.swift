@@ -11,34 +11,64 @@ import Foundation
 class SocketClient: Stream, StreamDelegate {
     /* Socket Client class: connects to a network socket, sends and recieves data, and manages connection. */
     
-    var socket_ip:String = String()
-    var fwd_socket_ip:String = String()
-    var socket_port:Int = Int()
+    var device_name = ""
+    var password = ""
+    var socket_ip = ""
+    var fwd_socket_ip = ""
+    var socket_port = 0
+    var device_set = false
     
     var inStream : InputStream?
     var outStream: OutputStream?
     
     var buffer = [UInt8](repeating: 0, count: 200)
     var sessionStatus = 0
-    var sessionLogs = [String()]
+    
+    let data_to_send = ["arm_system": "ARMSYSTEM",
+                         "disarm_system": "DISARMSYSTEM",
+                         "view_camera1": "VIEWCAMERAFEED1",
+                         "view_camera2": "VIEWCAMERAFEED2",
+                         "false_alarm": "FALSEALARM",
+                         "new_device": "NEWDEVICE",
+                         "stop_video_stream": "STOPVIDEOSTREAM",
+                         "disconnect": "DISCONNECT"]
+    
+    let data_to_recieve = ["success": "SUCCESS",
+                            "failure": "FAILURE",
+                            "system_breach": "SYSTEMBREACH",
+                            "unknown_request": "UNKNOWNREQUEST",
+                            "new_device": "NEWDEVICE"]
+    
+    init(name: String, password: String, ip: String, fwd_ip: String, port: Int) {
+        self.device_name = name
+        self.password = password
+        self.socket_ip = ip
+        self.fwd_socket_ip = fwd_ip
+        self.socket_port = port
+        self.device_set = true
+    }
     
     func start() {
         /* This method starts the socket client connection and connects to the assigned ip address and port
          
          The input and output stream is also set up in this method.
          */
-        var ipaddr = String()
+        var ipaddr = ""
         if self.getWiFiAddress() == nil {
             ipaddr = self.fwd_socket_ip
         } else {
             ipaddr = self.socket_ip
         }
         
-        Stream.getStreamsToHost(withName: ipaddr, port: self.socket_port, inputStream: &inStream, outputStream: &outStream)
-        self.inStream?.schedule(in: RunLoop.current, forMode: RunLoopMode.defaultRunLoopMode)
-        self.outStream?.schedule(in: RunLoop.current, forMode: RunLoopMode.defaultRunLoopMode)
-        self.inStream?.open()
-        self.outStream?.open()
+        if !ipaddr.isEmpty {
+            Stream.getStreamsToHost(withName: ipaddr, port: self.socket_port, inputStream: &inStream, outputStream: &outStream)
+            self.inStream?.schedule(in: RunLoop.current, forMode: RunLoopMode.defaultRunLoopMode)
+            self.outStream?.schedule(in: RunLoop.current, forMode: RunLoopMode.defaultRunLoopMode)
+            self.inStream?.open()
+            self.outStream?.open()
+        } else {
+            print("Error: IP Address hasn't been set...")
+        }
     }
     
     func getWiFiAddress() -> String? {
@@ -125,19 +155,51 @@ class SocketClient: Stream, StreamDelegate {
         return self.sessionStatus
     }
     
+    func get_ip() -> String {
+        return self.socket_ip
+    }
+    
     func set_ip(ip: String) {
         self.socket_ip = ip
+    }
+    
+    func get_port() -> Int {
+        return self.socket_port
     }
     
     func set_port(port: Int) {
         self.socket_port = port
     }
     
-    func get_ip() -> String {
-        return self.socket_ip
+    func get_device_name() -> String {
+        return self.device_name
     }
     
-    func get_port() -> Int {
-        return self.socket_port
+    func set_device_name(name: String) {
+        self.device_name = name
+    }
+    
+    func get_password() -> String {
+        return self.password
+    }
+    
+    func set_password(password: String) {
+        self.password = password
+    }
+    
+    func get_fwd_ip() -> String {
+        return self.fwd_socket_ip
+    }
+    
+    func set_fwd_ip(ip: String) {
+        self.fwd_socket_ip = ip
+    }
+    
+    func device_is_set() -> Bool {
+        return self.device_set
+    }
+    
+    func set_device_is_set(set: Bool) {
+        self.device_set = set
     }
 }

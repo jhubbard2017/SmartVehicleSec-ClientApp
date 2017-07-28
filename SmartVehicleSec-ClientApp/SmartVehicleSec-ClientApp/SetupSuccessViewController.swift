@@ -24,6 +24,4 @@ class SetupSuccessViewController: UIViewController {
     @IBAction func go_to_dashboard_action(_ sender: Any) {
         // Todo: Go to dashboard view controller
     }
-    
-
 }

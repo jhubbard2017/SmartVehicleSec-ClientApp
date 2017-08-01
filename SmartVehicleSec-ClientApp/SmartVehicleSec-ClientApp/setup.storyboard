@@ -61,7 +61,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="System Port #" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="8Uh-sx-kTA">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="System Port" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="8Uh-sx-kTA">
                                 <rect key="frame" x="29" y="322" width="317" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
@@ -82,7 +82,7 @@
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="pKl-cO-4UZ">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Streaming Port" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="pKl-cO-4UZ">
                                 <rect key="frame" x="29" y="382" width="317" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
@@ -95,10 +95,10 @@
                     <navigationItem key="navigationItem" title="Setup Information" id="Lfs-Fm-yCW"/>
                     <connections>
                         <outlet property="device_name" destination="ART-dn-b1w" id="1dB-A2-urd"/>
-                        <outlet property="password" destination="pKl-cO-4UZ" id="6Mk-Zj-Tsa"/>
+                        <outlet property="http_port" destination="8Uh-sx-kTA" id="T4p-hO-ggg"/>
                         <outlet property="sys_fwd_ip_address" destination="HqT-KO-PfP" id="YuP-h2-pOm"/>
                         <outlet property="sys_ip_address" destination="W9Z-vx-nrb" id="5Jt-mu-zoA"/>
-                        <outlet property="sys_port" destination="8Uh-sx-kTA" id="Vgt-fR-3AM"/>
+                        <outlet property="udp_port" destination="pKl-cO-4UZ" id="H3H-Di-QDc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="c15-TZ-0Jy" userLabel="First Responder" sceneMemberID="firstResponder"/>

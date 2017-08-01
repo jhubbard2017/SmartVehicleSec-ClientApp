@@ -47,6 +47,15 @@ func getWiFiAddress() -> String? {
 
 
 class ServerInformation {
+    /* Object to store informatino about the server
+     
+        Attributes:
+            - ip_address: local hostname of the server
+            - fwd_ip_address: global hostname of the server (Used when client isn't on same local network as the server)
+            - http_port: port number to send request to server API
+            - udp_port: port number to connect to socket for image frame transfers
+            - device_name: unique name of the device so that server knows trustworthy clients are sending requests
+     */
     var ip_address = ""
     var fwd_ip_address = ""
     var http_port = 0
@@ -56,14 +65,19 @@ class ServerInformation {
 
 
 class SecurityServerAPI {
+    /* Central class to control sending request and recieve responses
+     
+        - As of right now, only post requests are made to the REST API on the server, due to json not being sent/read correctly when using a GET request.
+          In regards to the server, a `201` code means that the request action was successful, and a `404` code means that the request action was a failure due
+          to some issues.
+        - The server returns json as a data response object, which is then converted to Swift's NSDictionary, making iterations through the data much easier (using methods of the NSDictionary class.)
+     */
     
     let _SUCCESS_REPONSE_CODE = 201
     let _FAILURE_RESPONSE_CODE = 404
     
-    let _DATA_TRUE = 1
-    let _DATA_FALSE = 0
-    
     func send_request(url: String, data: NSDictionary, method: String, completion: @escaping (_ return_data: NSDictionary) -> Void) {
+        // The current address of the server may change, since we don't have a static IP address, and the options for the client is either the same wifi network or a different wifi network. To solve this issue, we check to see if we are on wifi or LTE (client side.)
         let actual_url = "http://" + self.get_server_address() + ":" + String(server_info.http_port) + url
         let nsurl = URL(string: actual_url)
         var urlRequest = URLRequest(url: nsurl!)
@@ -75,6 +89,7 @@ class SecurityServerAPI {
             return
         }
         
+        // Set the content and acceptance types to json, so the server can recieve it as json.
         urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.addValue("application/json", forHTTPHeaderField: "Accept")
         
@@ -82,7 +97,9 @@ class SecurityServerAPI {
             guard error == nil else { return }
             guard let data = data else { return }
             do {
+                // Try to convert json to NSDictionary
                 if let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? NSDictionary {
+                    // Callback
                     completion(json)
                     return
                 }
@@ -90,11 +107,11 @@ class SecurityServerAPI {
                 print(error.localizedDescription)
                 return
             }
-            print("I'm done now")
         }).resume()
     }
     
     func get_server_address() -> String {
+        /* Method to choose which ip address to use for the server, depending on if the client is using LTE or wifi */
         if getWiFiAddress() == nil {
             return server_info.fwd_ip_address
         }

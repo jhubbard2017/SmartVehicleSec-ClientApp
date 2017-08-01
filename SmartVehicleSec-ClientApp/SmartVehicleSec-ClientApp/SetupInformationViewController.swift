@@ -13,9 +13,9 @@ class SetupInformationViewController: UIViewController {
     
      Attributes:
         sys_ip_address: ip address of the security server
-        sys_port: port number of the security server
-        password: password user will use to reconnect to server if disconnected after a fixed
-            length of time
+        sys_fwd_ip_address: global ip address of the security server
+        http_port: port number of the security server API
+        udp_port: port number of the streaming socket
         device_name: unique name to store as the device in the server device manager
     */
     
@@ -36,6 +36,13 @@ class SetupInformationViewController: UIViewController {
     
 
     @IBAction func finish_action(_ sender: Any) {
+        /* Action method when finish button is clicked.
+         
+            In this method we want to:
+                - validate the input fields (All should be completed before successful submission)
+                - check the connection to the server, which means try creating a new device on the server
+                - If successful, route to the `SetupSuccessViewController` component
+         */
         if (!(self.sys_ip_address.text?.isEmpty)! && !(self.http_port.text?.isEmpty)! &&
             !(self.device_name.text?.isEmpty)! && !(self.sys_fwd_ip_address.text?.isEmpty)!
             && !(self.udp_port.text?.isEmpty)!) {
@@ -55,6 +62,7 @@ class SetupInformationViewController: UIViewController {
     }
     
     func checkServerConnection() {
+        /* Method to check connection to the server, usin the SecurityServerAPI methods */
         let url = "/system/devices"
         let data = ["name": server_info.device_name] as NSDictionary
         server_api.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in

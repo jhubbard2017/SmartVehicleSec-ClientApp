@@ -28,7 +28,7 @@ class AppUtilities {
         blurEffectView.frame = view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-        indicatorText.frame = CGRect(x: 100, y: 100, width: 200, height: 200)
+        indicatorText.frame = CGRect(x: 100, y: 100, width: 200, height: 400)
         indicatorText.textAlignment = .center
         indicatorText.text = text
         indicatorText.textColor=UIColor.orange

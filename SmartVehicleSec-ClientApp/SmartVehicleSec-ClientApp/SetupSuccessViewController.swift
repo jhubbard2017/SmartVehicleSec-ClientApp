@@ -9,6 +9,7 @@
 import UIKit
 
 class SetupSuccessViewController: UIViewController {
+    /* Class to display success message and allow routing to dashboard on button click */
 
     override func viewDidLoad() {
         super.viewDidLoad()

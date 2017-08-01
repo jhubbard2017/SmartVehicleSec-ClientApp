@@ -8,6 +8,7 @@
 
 import UIKit
 
+// Global objects
 var server_info = ServerInformation()
 var app_utils = AppUtilities()
 var server_api = SecurityServerAPI()
@@ -18,10 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
+    // App lanuch status enumeration
     enum appLaunchStatus: Int {
         case firstLaunch = 0, notFirstLaunch
     }
     
+    // Constants: keys to store data
     let _LAUNCH_KEY = "LAUNCH_KEY"
     let _SERVER_INFO = "SERVER_INFO"
 
@@ -51,15 +54,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var initialViewController: UIViewController!
         
         let objects = UserDefaults.standard
+        // Check if this is the first time launching the app or not
         if objects.integer(forKey: _LAUNCH_KEY) == appLaunchStatus.firstLaunch.rawValue {
+            // Go to first launch view controller
             let main_sb = UIStoryboard(name: "Main", bundle: nil)
             initialViewController = main_sb.instantiateViewController(withIdentifier: "first_start_view_controller") as! FirstStartController
             
         } else if objects.integer(forKey: _LAUNCH_KEY) == appLaunchStatus.notFirstLaunch.rawValue {
             self.load_data()
             if !server_info.ip_address.isEmpty {
-                // Set dashboard view controller
+                // Go to dashboard
+                let dashboard_sb = UIStoryboard(name: "dashboard", bundle: nil)
+                initialViewController = dashboard_sb.instantiateViewController(withIdentifier: "dashboard_navigation_controller") as! UINavigationController
             } else {
+                // Go to setup
                 let setup_sb = UIStoryboard(name: "setup", bundle: nil)
                 initialViewController = setup_sb.instantiateViewController(withIdentifier: "setup_information_view_controller") as! SetupInformationViewController
             }

@@ -21,11 +21,9 @@ class SetupInformationViewController: UIViewController {
     
     @IBOutlet weak var sys_ip_address: UITextField!
     @IBOutlet weak var sys_fwd_ip_address: UITextField!
-    @IBOutlet weak var password: UITextField!
     @IBOutlet weak var device_name: UITextField!
-    @IBOutlet weak var sys_port: UITextField!
-    
-    var app_utils = AppUtilities()
+    @IBOutlet weak var http_port: UITextField!
+    @IBOutlet weak var udp_port: UITextField!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,53 +36,48 @@ class SetupInformationViewController: UIViewController {
     
 
     @IBAction func finish_action(_ sender: Any) {
-        if (!(self.sys_ip_address.text?.isEmpty)! && !(self.sys_port.text?.isEmpty)! &&
-            !(self.password.text?.isEmpty)! && !(self.device_name.text?.isEmpty)! &&
-            !(self.sys_fwd_ip_address.text?.isEmpty)!) {
+        if (!(self.sys_ip_address.text?.isEmpty)! && !(self.http_port.text?.isEmpty)! &&
+            !(self.device_name.text?.isEmpty)! && !(self.sys_fwd_ip_address.text?.isEmpty)!
+            && !(self.udp_port.text?.isEmpty)!) {
             // All fields are good
-            sock_client = SocketClient(name: self.device_name.text!,
-                                       password: self.password.text!,
-                                       ip: self.sys_ip_address.text!,
-                                       fwd_ip: self.sys_fwd_ip_address.text!,
-                                       port: Int(self.sys_port.text!)!)
-            self.app_utils.start_activity_indicator(view: self.view, text: "Checking connection...")
-            let success = self.checkServerConnection()
-            if success {
-                let data = sock_client.data_to_send["new_device"]
-                let name = sock_client.get_device_name()
-                let name_data = data! + " " + name
-                sock_client.send_data(data: name_data)
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
-                    if sock_client.get_data() == sock_client.data_to_recieve["success"] {
-                        self.app_utils.stop_activity_indicator()
-                        let success_vc = self.storyboard?.instantiateViewController(withIdentifier: "setup_success_view_controller")
-                        self.present(success_vc!, animated: true, completion: nil)
-                    }
-                })
-            } else {
-                // Alert message
-                self.app_utils.stop_activity_indicator()
-                let alert_title = "Error"
-                let alert_message = "Could not connect to security system. Try again."
-                self.app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
-            }
+            server_info.ip_address = self.sys_ip_address.text!
+            server_info.fwd_ip_address = self.sys_fwd_ip_address.text!
+            server_info.http_port = Int(self.http_port.text!)!
+            server_info.udp_port = Int(self.udp_port.text!)!
+            server_info.device_name = self.device_name.text!
+            app_utils.start_activity_indicator(view: self.view, text: "Checking connection...")
+            self.checkServerConnection()
         } else {
              let alert_title = "Error"
              let alert_message = "Please complete all fields."
-             self.app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
+             app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
         }
     }
     
-    func checkServerConnection() -> Bool {
-        var to_return = false
-        sock_client.start()
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
-            let recv_data = sock_client.get_data()
-            if recv_data != "" && recv_data == sock_client.data_to_recieve["new_device"] {
-                to_return = true
+    func checkServerConnection() {
+        let url = "/system/devices"
+        let data = ["name": server_info.device_name] as NSDictionary
+        server_api.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+            let code = response.value(forKey: "code") as! Int
+            let success = response.value(forKey: "data") as! Bool
+            if code == server_api._SUCCESS_REPONSE_CODE && success {
+                DispatchQueue.main.async {
+                    // Update UI
+                    app_utils.stop_activity_indicator()
+                    let success_vc = self.storyboard?.instantiateViewController(withIdentifier: "setup_success_view_controller")
+                    self.present(success_vc!, animated: true, completion: nil)
+                }
+            } else {
+                // Alert message
+                DispatchQueue.main.async {
+                    // Update UI
+                    app_utils.stop_activity_indicator()
+                    let alert_title = "Error"
+                    let alert_message = "Could not connect to security system. Try again."
+                    app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
+                }
             }
         })
-        return to_return
     }
 
 }

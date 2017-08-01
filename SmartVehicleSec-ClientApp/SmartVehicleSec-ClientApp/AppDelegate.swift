@@ -8,7 +8,10 @@
 
 import UIKit
 
-var sock_client = SocketClient(name: "", password: "", ip: "", fwd_ip: "", port: 0)
+var server_info = ServerInformation()
+var app_utils = AppUtilities()
+var server_api = SecurityServerAPI()
+var video_streamer = UDPSocketStreamer()
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     let _LAUNCH_KEY = "LAUNCH_KEY"
-    let _SOCKET_KEY = "SOCKET_KEY"
+    let _SERVER_INFO = "SERVER_INFO"
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -54,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
         } else if objects.integer(forKey: _LAUNCH_KEY) == appLaunchStatus.notFirstLaunch.rawValue {
             self.load_data()
-            if sock_client.device_is_set() {
+            if !server_info.ip_address.isEmpty {
                 // Set dashboard view controller
             } else {
                 let setup_sb = UIStoryboard(name: "setup", bundle: nil)
@@ -76,16 +79,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func save_data() {
         /* Saves current app data */
-        let sock_data = NSKeyedArchiver.archivedData(withRootObject: sock_client)
-        let encArray: [Data] = [sock_data]
-        UserDefaults.standard.set(encArray, forKey: _SOCKET_KEY)
+        let server_data = NSKeyedArchiver.archivedData(withRootObject: server_info)
+        let encArray: [Data] = [server_data]
+        UserDefaults.standard.set(encArray, forKey: _SERVER_INFO)
         UserDefaults.standard.synchronize()
     }
     
     func load_data() {
         /* Loads current data in user defaults */
-        if let data: [Data] = UserDefaults.standard.object(forKey: _SOCKET_KEY) as? [Data] {
-            sock_client = NSKeyedUnarchiver.unarchiveObject(with: data[0] as Data) as! SocketClient
+        if let data: [Data] = UserDefaults.standard.object(forKey: _SERVER_INFO) as? [Data] {
+            server_info = NSKeyedUnarchiver.unarchiveObject(with: data[0] as Data) as? ServerInformation ?? ServerInformation()
         }
     }
 }

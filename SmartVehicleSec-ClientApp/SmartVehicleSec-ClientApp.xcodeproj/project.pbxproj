@@ -7,11 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EF53C00D1F2C694F007BD932 /* SecurityServerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF53C00C1F2C694F007BD932 /* SecurityServerAPI.swift */; };
+		EF53C00F1F2C90F9007BD932 /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF53C00E1F2C90F9007BD932 /* VideoViewController.swift */; };
 		EF6368651F2995D1007E3788 /* security_client.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6368641F2995D1007E3788 /* security_client.swift */; };
 		EFA5DEA71F283D4300945A4B /* setup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EFA5DEA61F283D4300945A4B /* setup.storyboard */; };
 		EFA5DEA91F283D9F00945A4B /* SetupInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA5DEA81F283D9F00945A4B /* SetupInformationViewController.swift */; };
 		EFA5DEAB1F28473F00945A4B /* utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA5DEAA1F28473F00945A4B /* utilities.swift */; };
 		EFA5DEAD1F2855DD00945A4B /* SetupSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA5DEAC1F2855DD00945A4B /* SetupSuccessViewController.swift */; };
+		EFBCC3131F2BD8B500A3DDA3 /* dashboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EFBCC3121F2BD8B500A3DDA3 /* dashboard.storyboard */; };
+		EFBCC3151F2BFB1C00A3DDA3 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBCC3141F2BFB1C00A3DDA3 /* DashboardViewController.swift */; };
 		EFCED4C31F27BD63002E9EA3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFCED4C21F27BD63002E9EA3 /* AppDelegate.swift */; };
 		EFCED4C51F27BD63002E9EA3 /* FirstStartController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFCED4C41F27BD63002E9EA3 /* FirstStartController.swift */; };
 		EFCED4C81F27BD63002E9EA3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EFCED4C61F27BD63002E9EA3 /* Main.storyboard */; };
@@ -39,12 +43,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EF53C00C1F2C694F007BD932 /* SecurityServerAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecurityServerAPI.swift; sourceTree = "<group>"; };
+		EF53C00E1F2C90F9007BD932 /* VideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
 		EF6368641F2995D1007E3788 /* security_client.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = security_client.swift; sourceTree = "<group>"; };
 		EF6368661F299D46007E3788 /* GR-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GR-Bridging-Header.h"; sourceTree = "<group>"; };
 		EFA5DEA61F283D4300945A4B /* setup.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = setup.storyboard; sourceTree = "<group>"; };
 		EFA5DEA81F283D9F00945A4B /* SetupInformationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupInformationViewController.swift; sourceTree = "<group>"; };
 		EFA5DEAA1F28473F00945A4B /* utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = utilities.swift; sourceTree = "<group>"; };
 		EFA5DEAC1F2855DD00945A4B /* SetupSuccessViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupSuccessViewController.swift; sourceTree = "<group>"; };
+		EFBCC3121F2BD8B500A3DDA3 /* dashboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = dashboard.storyboard; sourceTree = "<group>"; };
+		EFBCC3141F2BFB1C00A3DDA3 /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		EFCED4BF1F27BD63002E9EA3 /* SmartVehicleSec-ClientApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SmartVehicleSec-ClientApp.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFCED4C21F27BD63002E9EA3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EFCED4C41F27BD63002E9EA3 /* FirstStartController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstStartController.swift; sourceTree = "<group>"; };
@@ -90,6 +98,7 @@
 			children = (
 				EF6368641F2995D1007E3788 /* security_client.swift */,
 				EF6368661F299D46007E3788 /* GR-Bridging-Header.h */,
+				EF53C00C1F2C694F007BD932 /* SecurityServerAPI.swift */,
 			);
 			name = "Back End Source";
 			sourceTree = "<group>";
@@ -111,6 +120,16 @@
 				EFA5DEAC1F2855DD00945A4B /* SetupSuccessViewController.swift */,
 			);
 			name = "Set Up Components";
+			sourceTree = "<group>";
+		};
+		EFBCC3111F2BD7B800A3DDA3 /* Dashboard Components */ = {
+			isa = PBXGroup;
+			children = (
+				EFBCC3121F2BD8B500A3DDA3 /* dashboard.storyboard */,
+				EFBCC3141F2BFB1C00A3DDA3 /* DashboardViewController.swift */,
+				EF53C00E1F2C90F9007BD932 /* VideoViewController.swift */,
+			);
+			name = "Dashboard Components";
 			sourceTree = "<group>";
 		};
 		EFCED4B61F27BD62002E9EA3 = {
@@ -136,6 +155,7 @@
 		EFCED4C11F27BD63002E9EA3 /* SmartVehicleSec-ClientApp */ = {
 			isa = PBXGroup;
 			children = (
+				EFBCC3111F2BD7B800A3DDA3 /* Dashboard Components */,
 				EF6368631F299597007E3788 /* Back End Source */,
 				EFA5DEA51F283D1200945A4B /* Set Up Components */,
 				EFA5DEA41F283CCC00945A4B /* First Start Components */,
@@ -277,6 +297,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EFA5DEA71F283D4300945A4B /* setup.storyboard in Resources */,
+				EFBCC3131F2BD8B500A3DDA3 /* dashboard.storyboard in Resources */,
 				EFCED4CD1F27BD63002E9EA3 /* LaunchScreen.storyboard in Resources */,
 				EFCED4CA1F27BD63002E9EA3 /* Assets.xcassets in Resources */,
 				EFCED4C81F27BD63002E9EA3 /* Main.storyboard in Resources */,
@@ -305,10 +326,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				EFA5DEAD1F2855DD00945A4B /* SetupSuccessViewController.swift in Sources */,
+				EFBCC3151F2BFB1C00A3DDA3 /* DashboardViewController.swift in Sources */,
+				EF53C00D1F2C694F007BD932 /* SecurityServerAPI.swift in Sources */,
 				EFCED4C51F27BD63002E9EA3 /* FirstStartController.swift in Sources */,
 				EFCED4C31F27BD63002E9EA3 /* AppDelegate.swift in Sources */,
 				EFA5DEAB1F28473F00945A4B /* utilities.swift in Sources */,
 				EFA5DEA91F283D9F00945A4B /* SetupInformationViewController.swift in Sources */,
+				EF53C00F1F2C90F9007BD932 /* VideoViewController.swift in Sources */,
 				EF6368651F2995D1007E3788 /* security_client.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

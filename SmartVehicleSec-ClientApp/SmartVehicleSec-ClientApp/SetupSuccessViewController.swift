@@ -22,6 +22,8 @@ class SetupSuccessViewController: UIViewController {
     }
     
     @IBAction func go_to_dashboard_action(_ sender: Any) {
-        // Todo: Go to dashboard view controller
+        let dashboard_sb = UIStoryboard(name: "dashboard", bundle: nil)
+        let dashboard_vc = dashboard_sb.instantiateViewController(withIdentifier: "dashboard_navigation_controller") as! UINavigationController
+        self.present(dashboard_vc, animated: true, completion: nil)
     }
 }

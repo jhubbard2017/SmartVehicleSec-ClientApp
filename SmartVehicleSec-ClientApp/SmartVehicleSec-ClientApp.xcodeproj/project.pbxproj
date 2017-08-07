@@ -14,6 +14,9 @@
 		EFA5DEA91F283D9F00945A4B /* SetupInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA5DEA81F283D9F00945A4B /* SetupInformationViewController.swift */; };
 		EFA5DEAB1F28473F00945A4B /* utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA5DEAA1F28473F00945A4B /* utilities.swift */; };
 		EFA5DEAD1F2855DD00945A4B /* SetupSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA5DEAC1F2855DD00945A4B /* SetupSuccessViewController.swift */; };
+		EFAB56F51F3152DA004224BB /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFAB56F41F3152DA004224BB /* LocationViewController.swift */; };
+		EFAB56F81F315651004224BB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFAB56F71F315651004224BB /* MapKit.framework */; };
+		EFAB56FA1F3161FE004224BB /* CurrentGPSLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFAB56F91F3161FE004224BB /* CurrentGPSLocation.swift */; };
 		EFBCC3131F2BD8B500A3DDA3 /* dashboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EFBCC3121F2BD8B500A3DDA3 /* dashboard.storyboard */; };
 		EFBCC3151F2BFB1C00A3DDA3 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBCC3141F2BFB1C00A3DDA3 /* DashboardViewController.swift */; };
 		EFCED4C31F27BD63002E9EA3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFCED4C21F27BD63002E9EA3 /* AppDelegate.swift */; };
@@ -51,6 +54,9 @@
 		EFA5DEA81F283D9F00945A4B /* SetupInformationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupInformationViewController.swift; sourceTree = "<group>"; };
 		EFA5DEAA1F28473F00945A4B /* utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = utilities.swift; sourceTree = "<group>"; };
 		EFA5DEAC1F2855DD00945A4B /* SetupSuccessViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupSuccessViewController.swift; sourceTree = "<group>"; };
+		EFAB56F41F3152DA004224BB /* LocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
+		EFAB56F71F315651004224BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		EFAB56F91F3161FE004224BB /* CurrentGPSLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentGPSLocation.swift; sourceTree = "<group>"; };
 		EFBCC3121F2BD8B500A3DDA3 /* dashboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = dashboard.storyboard; sourceTree = "<group>"; };
 		EFBCC3141F2BFB1C00A3DDA3 /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		EFCED4BF1F27BD63002E9EA3 /* SmartVehicleSec-ClientApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SmartVehicleSec-ClientApp.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,6 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EFAB56F81F315651004224BB /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,6 +106,7 @@
 				EF6368641F2995D1007E3788 /* security_client.swift */,
 				EF6368661F299D46007E3788 /* GR-Bridging-Header.h */,
 				EF53C00C1F2C694F007BD932 /* SecurityServerAPI.swift */,
+				EFAB56F91F3161FE004224BB /* CurrentGPSLocation.swift */,
 			);
 			name = "Back End Source";
 			sourceTree = "<group>";
@@ -122,12 +130,21 @@
 			name = "Set Up Components";
 			sourceTree = "<group>";
 		};
+		EFAB56F61F315651004224BB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EFAB56F71F315651004224BB /* MapKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		EFBCC3111F2BD7B800A3DDA3 /* Dashboard Components */ = {
 			isa = PBXGroup;
 			children = (
 				EFBCC3121F2BD8B500A3DDA3 /* dashboard.storyboard */,
 				EFBCC3141F2BFB1C00A3DDA3 /* DashboardViewController.swift */,
 				EF53C00E1F2C90F9007BD932 /* VideoViewController.swift */,
+				EFAB56F41F3152DA004224BB /* LocationViewController.swift */,
 			);
 			name = "Dashboard Components";
 			sourceTree = "<group>";
@@ -139,6 +156,7 @@
 				EFCED4D61F27BD63002E9EA3 /* SmartVehicleSec-ClientAppTests */,
 				EFCED4E11F27BD63002E9EA3 /* SmartVehicleSec-ClientAppUITests */,
 				EFCED4C01F27BD63002E9EA3 /* Products */,
+				EFAB56F61F315651004224BB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -256,6 +274,11 @@
 						CreatedOnToolsVersion = 8.3.3;
 						DevelopmentTeam = QAUJP6N6W5;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Maps.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					EFCED4D21F27BD63002E9EA3 = {
 						CreatedOnToolsVersion = 8.3.3;
@@ -330,10 +353,12 @@
 				EF53C00D1F2C694F007BD932 /* SecurityServerAPI.swift in Sources */,
 				EFCED4C51F27BD63002E9EA3 /* FirstStartController.swift in Sources */,
 				EFCED4C31F27BD63002E9EA3 /* AppDelegate.swift in Sources */,
+				EFAB56F51F3152DA004224BB /* LocationViewController.swift in Sources */,
 				EFA5DEAB1F28473F00945A4B /* utilities.swift in Sources */,
 				EFA5DEA91F283D9F00945A4B /* SetupInformationViewController.swift in Sources */,
 				EF53C00F1F2C90F9007BD932 /* VideoViewController.swift in Sources */,
 				EF6368651F2995D1007E3788 /* security_client.swift in Sources */,
+				EFAB56FA1F3161FE004224BB /* CurrentGPSLocation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

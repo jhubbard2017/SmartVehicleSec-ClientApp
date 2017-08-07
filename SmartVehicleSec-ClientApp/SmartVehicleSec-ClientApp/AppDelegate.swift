@@ -87,17 +87,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func save_data() {
         /* Saves current app data */
-        let server_data = NSKeyedArchiver.archivedData(withRootObject: server_info)
-        let encArray: [Data] = [server_data]
-        UserDefaults.standard.set(encArray, forKey: _SERVER_INFO)
-        UserDefaults.standard.synchronize()
+//        let server_data = NSKeyedArchiver.archivedData(withRootObject: server_info)
+//        let encArray: [Data] = [server_data]
+//        UserDefaults.standard.set(encArray, forKey: _SERVER_INFO)
+//        UserDefaults.standard.synchronize()
     }
     
     func load_data() {
         /* Loads current data in user defaults */
-        if let data: [Data] = UserDefaults.standard.object(forKey: _SERVER_INFO) as? [Data] {
-            server_info = NSKeyedUnarchiver.unarchiveObject(with: data[0] as Data) as? ServerInformation ?? ServerInformation()
-        }
+//        if let data: [Data] = UserDefaults.standard.object(forKey: _SERVER_INFO) as? [Data] {
+//            server_info = NSKeyedUnarchiver.unarchiveObject(with: data[0] as Data) as? ServerInformation ?? ServerInformation()
+//        }
     }
 }
 

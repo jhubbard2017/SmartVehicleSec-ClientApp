@@ -10,23 +10,33 @@ import UIKit
 import MapKit
 
 class LocationViewController: UIViewController, MKMapViewDelegate {
+    /* This is the class for the location view controller
+     
+     In this class, we periodically retrieve the gps coordinates of the security system and pin it to the map
+     When the user wants to find their vehicle, we navigate to the Maps plugin for Mapkit passing in the current
+     coordinates...
+     */
 
     @IBOutlet weak var mapview: MKMapView!
     
     var car_annotation: CarLocation!
     var current_location: CLLocationCoordinate2D!
     
-    var locating = true
+    var timer: Timer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        while locating {
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-//                self.start_gps_location_triggering()
-//            }
-//        }
-        self.start_gps_location_triggering()
+        self.timer = Timer.scheduledTimer(timeInterval: 1.5, target: self,
+                                          selector: #selector(LocationViewController.start_gps_location_triggering),
+                                          userInfo: nil, repeats: true)
+        self.timer.fire()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        // Stop the background task when user navigates to new view controller
+        print("Stopped getting location")
+        self.timer.invalidate()
     }
 
     override func didReceiveMemoryWarning() {
@@ -44,9 +54,6 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let renderer = MKCircleRenderer(overlay: overlay)
-        renderer.fillColor = UIColor.black.withAlphaComponent(0.15)
-        renderer.strokeColor = UIColor.blue
-        renderer.lineWidth = 1
         return renderer
     }
 
@@ -67,6 +74,7 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
     }
     
     func start_gps_location_triggering() {
+        print("Got location: ")
         let url = "/system/location"
         let data = ["name": server_info.device_name] as NSDictionary
         server_api.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
@@ -74,9 +82,10 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
             let coordinates = response.value(forKey: "data") as! NSDictionary
             let latitude = coordinates.value(forKey: "latitude") as! CLLocationDegrees
             let longitude = coordinates.value(forKey: "longitude") as! CLLocationDegrees
+            print("Got location: \(latitude) \(longitude)")
             if code == server_api._SUCCESS_REPONSE_CODE {
+                // Update UI
                 DispatchQueue.main.async {
-                    // Update UI
                     let distance:CLLocationDistance = 500
                     self.current_location = CLLocationCoordinate2DMake(latitude, longitude)
                     let region = MKCoordinateRegionMakeWithDistance(self.current_location, distance, distance)
@@ -87,47 +96,28 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
                 }
             } else {
                 // Alert message
-                let alert_title = "Error"
-                let alert_message = "Could not get GPS location. Check connection..."
-                app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
+                DispatchQueue.main.async {
+                    let alert_title = "Error"
+                    let alert_message = "Could not get GPS location. Check connection..."
+                    app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
+                }
             }
         })
     }
 
     @IBAction func navigation_to_vehicle_action(_ sender: Any) {
-        let url = "/system/location"
-        let data = ["name": server_info.device_name] as NSDictionary
-        server_api.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
-            let code = response.value(forKey: "code") as! Int
-            let coordinates = response.value(forKey: "data") as! NSDictionary
-            let latitude = coordinates.value(forKey: "latitude") as! CLLocationDegrees
-            let longitude = coordinates.value(forKey: "longitude") as! CLLocationDegrees
-            if code == server_api._SUCCESS_REPONSE_CODE {
-                DispatchQueue.main.async {
-                    // Update UI
-                    let distance:CLLocationDistance = 500
-                    self.current_location = CLLocationCoordinate2DMake(latitude, longitude)
-                    let region = MKCoordinateRegionMakeWithDistance(self.current_location, distance, distance)
-                    self.mapview.setRegion(region, animated: true)
-                    
-                    self.car_annotation = CarLocation(coordinate: self.current_location)
-                    self.addAnnotations()
-                    
-                    let options = [
-                        MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: region.center),
-                        MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: region.span)
-                    ]
-                    let placemark = MKPlacemark(coordinate: self.current_location, addressDictionary: nil)
-                    let mapItem = MKMapItem(placemark: placemark)
-                    mapItem.name = "My Vehicle: Current Location"
-                    mapItem.openInMaps(launchOptions: options)
-                }
-            } else {
-                // Alert message
-                let alert_title = "Error"
-                let alert_message = "Could not get GPS location. Check connection..."
-                app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
-            }
-        })
+        print("Stopped getting location")
+        self.timer.invalidate()
+        let distance:CLLocationDistance = 500
+        let region = MKCoordinateRegionMakeWithDistance(self.current_location, distance, distance)
+        
+        let options = [
+            MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: region.center),
+            MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: region.span)
+        ]
+        let placemark = MKPlacemark(coordinate: self.current_location, addressDictionary: nil)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = "My Vehicle"
+        mapItem.openInMaps(launchOptions: options)
     }
 }

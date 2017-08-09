@@ -23,7 +23,6 @@ class SetupInformationViewController: UIViewController {
     @IBOutlet weak var sys_fwd_ip_address: UITextField!
     @IBOutlet weak var device_name: UITextField!
     @IBOutlet weak var http_port: UITextField!
-    @IBOutlet weak var udp_port: UITextField!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,13 +43,11 @@ class SetupInformationViewController: UIViewController {
                 - If successful, route to the `SetupSuccessViewController` component
          */
         if (!(self.sys_ip_address.text?.isEmpty)! && !(self.http_port.text?.isEmpty)! &&
-            !(self.device_name.text?.isEmpty)! && !(self.sys_fwd_ip_address.text?.isEmpty)!
-            && !(self.udp_port.text?.isEmpty)!) {
+            !(self.device_name.text?.isEmpty)! && !(self.sys_fwd_ip_address.text?.isEmpty)!) {
             // All fields are good
             server_info.ip_address = self.sys_ip_address.text!
             server_info.fwd_ip_address = self.sys_fwd_ip_address.text!
             server_info.http_port = Int(self.http_port.text!)!
-            server_info.udp_port = Int(self.udp_port.text!)!
             server_info.device_name = self.device_name.text!
             app_utils.start_activity_indicator(view: self.view, text: "Checking connection...")
             self.checkServerConnection()

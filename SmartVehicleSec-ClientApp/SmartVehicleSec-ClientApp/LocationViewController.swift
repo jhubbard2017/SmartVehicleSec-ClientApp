@@ -28,7 +28,7 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
         super.viewDidLoad()
         
         self.timer = Timer.scheduledTimer(timeInterval: 1.5, target: self,
-                                          selector: #selector(LocationViewController.start_gps_location_triggering),
+                                          selector: #selector(LocationViewController.get_gps_location),
                                           userInfo: nil, repeats: true)
         self.timer.fire()
     }
@@ -73,17 +73,17 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    func start_gps_location_triggering() {
+    func get_gps_location() {
         print("Got location: ")
         let url = "/system/location"
-        let data = ["name": server_info.device_name] as NSDictionary
-        server_api.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        let data = ["md_mac_address": device_uuid!] as NSDictionary
+        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            let coordinates = response.value(forKey: "data") as! NSDictionary
-            let latitude = coordinates.value(forKey: "latitude") as! CLLocationDegrees
-            let longitude = coordinates.value(forKey: "longitude") as! CLLocationDegrees
-            print("Got location: \(latitude) \(longitude)")
-            if code == server_api._SUCCESS_REPONSE_CODE {
+            if code == server_client._SUCCESS_REPONSE_CODE {
+                let coordinates = response.value(forKey: "data") as! NSDictionary
+                let latitude = coordinates.value(forKey: "latitude") as! CLLocationDegrees
+                let longitude = coordinates.value(forKey: "longitude") as! CLLocationDegrees
+                print("Got location: \(latitude) \(longitude)")
                 // Update UI
                 DispatchQueue.main.async {
                     let distance:CLLocationDistance = 500

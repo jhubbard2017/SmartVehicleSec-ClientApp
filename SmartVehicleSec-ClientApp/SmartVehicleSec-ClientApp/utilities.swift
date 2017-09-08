@@ -64,4 +64,34 @@ class AppUtilities {
         alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.default, handler: nil))
         controller.present(alert, animated: true, completion: nil)
     }
+    
+    func validateInputs(inputs: [UITextField]) -> Bool {
+        /*
+         Method to validate a list of inputs
+         
+         args:
+            inputs: [UITextField]
+         
+         returns:
+            bool
+         */
+        var validated = true
+        for textfield in inputs {
+            if (textfield.text?.isEmpty)! {
+                validated = false
+                break
+            }
+        }
+        return validated
+    }
+}
+
+struct Contact {
+    var name = ""
+    var email = ""
+    var phone = ""
+    
+    func convertToDict() -> NSDictionary {
+        return ["name": self.name, "email": self.email, "phone": self.phone] as NSDictionary
+    }
 }

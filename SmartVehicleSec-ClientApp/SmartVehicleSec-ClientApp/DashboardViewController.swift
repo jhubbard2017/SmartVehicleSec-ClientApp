@@ -23,7 +23,7 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
     @IBOutlet weak var status_img: UIImageView!
     @IBOutlet weak var status: UILabel!
     
-    var system_armed: Bool!
+    var system_armed = false
     
     // Constants for tableview cell identifiers
     let cell_names = ["video_cell", "location_cell", "temperature_cell", "logs_cell", "settings_cell", "help_cell"]
@@ -67,44 +67,72 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
             - Here, in the callbacks, we need to update the UI to show some form of representation that the system security config has changed.
                 To do that, we change the button and status text, and we also update the status image to reflect the change.
          */
-        let url = "/system/arm"
-        let data = ["name": server_info.device_name, "data": !self.system_armed] as NSDictionary
+        let data = ["md_mac_address": device_uuid!] as NSDictionary
         if self.system_armed {
             // Disarm system
-            server_api.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+            let url = "/system/disarm"
+            server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
                 let code = response.value(forKey: "code") as! Int
-                let result = response.value(forKey: "data") as! Bool
-                if code == server_api._SUCCESS_REPONSE_CODE && result {
-                    DispatchQueue.main.async {
-                        self.system_armed = false
-                        self.status.text = "Disarmed"
-                        self.arm_btn.titleLabel?.text = "Arm System"
-                        self.status_img.image = UIImage(named: "unlocked.png")
+                if code == server_client._SUCCESS_REPONSE_CODE {
+                    let result = response.value(forKey: "data") as! Bool
+                    if result {
+                        DispatchQueue.main.async {
+                            self.system_armed = false
+                            self.status.text = "Disarmed"
+                            self.arm_btn.titleLabel?.text = "Arm System"
+                            self.status_img.image = UIImage(named: "unlocked.png")
+                        }
+                    } else {
+                        // Alert message
+                        DispatchQueue.main.async {
+                            // Update UI
+                            self.status.text = "Unknown"
+                            let message = "Failed to arm system"
+                            let alert_title = "Error"
+                            app_utils.showDefaultAlert(controller: self, title: alert_title, message: message)
+                        }
                     }
                 } else {
                     // Alert message
-                    let alert_title = "Error"
-                    let alert_message = "Could not disarm system. Check connection..."
-                    app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
+                    DispatchQueue.main.async {
+                        // Update UI
+                        let message = response.value(forKey: "message") as! String
+                        let alert_title = "Error"
+                        app_utils.showDefaultAlert(controller: self, title: alert_title, message: message)
+                    }
                 }
             })
         } else {
             // Arm system
-            server_api.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+            let url = "/system/arm"
+            server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
                 let code = response.value(forKey: "code") as! Int
-                let result = response.value(forKey: "data") as! Bool
-                if code == server_api._SUCCESS_REPONSE_CODE && result {
-                    DispatchQueue.main.async {
-                        self.system_armed = true
-                        self.status.text = "Armed"
-                        self.arm_btn.titleLabel?.text = "Disarm System"
-                        self.status_img.image = UIImage(named: "locked.png")
+                if code == server_client._SUCCESS_REPONSE_CODE {
+                    let result = response.value(forKey: "data") as! Bool
+                    if result {
+                        DispatchQueue.main.async {
+                            self.system_armed = true
+                            self.status.text = "Armed"
+                            self.arm_btn.titleLabel?.text = "Disarm System"
+                            self.status_img.image = UIImage(named: "locked.png")
+                        }
+                    } else {
+                        // Alert message
+                        DispatchQueue.main.async {
+                            // Update UI
+                            let message = "Failed to arm system"
+                            let alert_title = "Error"
+                            app_utils.showDefaultAlert(controller: self, title: alert_title, message: message)
+                        }
                     }
                 } else {
                     // Alert message
-                    let alert_title = "Error"
-                    let alert_message = "Could not arm system. Check connection..."
-                    app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
+                    DispatchQueue.main.async {
+                        // Update UI
+                        let message = response.value(forKey: "message") as! String
+                        let alert_title = "Error"
+                        app_utils.showDefaultAlert(controller: self, title: alert_title, message: message)
+                    }
                 }
             })
         }
@@ -116,26 +144,37 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
             - Send a request to get data about the system being armed or not.
                 Show UI reflections of that current state.
          */
-        let url = "/system/config/system_armed"
-        let data = ["name": server_info.device_name] as NSDictionary
-        server_api.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        let url = "/system/security_config"
+        let data = ["md_mac_address": device_uuid!] as NSDictionary
+        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            let system_is_armed = response.value(forKey: "data") as! Bool
-            if code == server_api._SUCCESS_REPONSE_CODE && system_is_armed {
-                DispatchQueue.main.async {
-                    // Update UI
-                    self.arm_btn.titleLabel?.text = "Disarm System"
-                    self.status_img.image = UIImage(named: "locked.png")
-                    self.system_armed = true
-                    self.status.text = "Armed"
+            if code == server_client._SUCCESS_REPONSE_CODE {
+                let data = response.value(forKey: "data") as! NSDictionary
+                let system_armed = data.value(forKey: "system_armed") as! Bool
+                if system_armed {
+                    DispatchQueue.main.async {
+                        // Update UI
+                        self.arm_btn.titleLabel?.text = "Disarm System"
+                        self.status_img.image = UIImage(named: "locked.png")
+                        self.system_armed = true
+                        self.status.text = "Armed"
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        // Update UI
+                        self.arm_btn.titleLabel?.text = "Arm System"
+                        self.status_img.image = UIImage(named: "unlocked.png")
+                        self.system_armed = false
+                        self.status.text = "Disarmed"
+                    }
                 }
             } else {
+                // Alert message
                 DispatchQueue.main.async {
                     // Update UI
-                    self.arm_btn.titleLabel?.text = "Arm System"
-                    self.status_img.image = UIImage(named: "unlocked.png")
-                    self.system_armed = false
-                    self.status.text = "Disarmed"
+                    let message = response.value(forKey: "message") as! String
+                    let alert_title = "Error"
+                    app_utils.showDefaultAlert(controller: self, title: alert_title, message: message)
                 }
             }
         })

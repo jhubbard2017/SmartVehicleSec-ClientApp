@@ -11,8 +11,8 @@ import UIKit
 // Global objects
 var server_info = ServerInformation()
 var app_utils = AppUtilities()
-var server_api = SecurityServerAPI()
-var video_streamer = UDPSocketStreamer()
+var server_client = SecurityServerAPI()
+var device_uuid = UIDevice.current.identifierForVendor?.uuidString
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -69,7 +69,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             } else {
                 // Go to setup
                 let setup_sb = UIStoryboard(name: "setup", bundle: nil)
-                initialViewController = setup_sb.instantiateViewController(withIdentifier: "setup_information_view_controller") as! SetupInformationViewController
+                initialViewController = setup_sb.instantiateViewController(withIdentifier: "SetupStartViewController")
             }
         }
         

@@ -57,10 +57,7 @@ class ServerInformation {
             - device_name: unique name of the device so that server knows trustworthy clients are sending requests
      */
     var ip_address = ""
-    var fwd_ip_address = ""
-    var http_port = 0
-    var udp_port = 0
-    var device_name = ""
+    var port = 0
 }
 
 
@@ -78,7 +75,7 @@ class SecurityServerAPI {
     
     func send_request(url: String, data: NSDictionary, method: String, completion: @escaping (_ return_data: NSDictionary) -> Void) {
         // The current address of the server may change, since we don't have a static IP address, and the options for the client is either the same wifi network or a different wifi network. To solve this issue, we check to see if we are on wifi or LTE (client side.)
-        let actual_url = "http://" + self.get_server_address() + ":" + String(server_info.http_port) + url
+        let actual_url = "http://" + server_info.ip_address + ":" + String(server_info.port) + url
         let nsurl = URL(string: actual_url)
         var urlRequest = URLRequest(url: nsurl!)
         urlRequest.httpMethod = method
@@ -108,13 +105,5 @@ class SecurityServerAPI {
                 return
             }
         }).resume()
-    }
-    
-    func get_server_address() -> String {
-        /* Method to choose which ip address to use for the server, depending on if the client is using LTE or wifi */
-        if getWiFiAddress() == nil {
-            return server_info.fwd_ip_address
-        }
-        return server_info.ip_address
     }
 }

@@ -24,6 +24,7 @@ class TemperatureViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.layoutIfNeeded()
 
         // Do any additional setup after loading the view.
         self.timer = Timer.scheduledTimer(timeInterval: 1.5, target: self,

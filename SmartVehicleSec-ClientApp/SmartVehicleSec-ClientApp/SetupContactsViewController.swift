@@ -33,6 +33,7 @@ class SetupContactsViewController: UIViewController, UITableViewDelegate, UITabl
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.layoutIfNeeded()
 
         // Do any additional setup after loading the view.
         self.tableview.tableFooterView = UIView()

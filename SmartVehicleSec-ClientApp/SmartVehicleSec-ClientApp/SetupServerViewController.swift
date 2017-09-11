@@ -23,6 +23,7 @@ class SetupServerViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.layoutIfNeeded()
 
         self.textfieldList = [self.ip_address, self.port]
     }

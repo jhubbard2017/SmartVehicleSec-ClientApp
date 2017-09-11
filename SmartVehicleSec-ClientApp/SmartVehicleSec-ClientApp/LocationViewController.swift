@@ -26,6 +26,7 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.layoutIfNeeded()
         
         self.timer = Timer.scheduledTimer(timeInterval: 1.5, target: self,
                                           selector: #selector(LocationViewController.get_gps_location),

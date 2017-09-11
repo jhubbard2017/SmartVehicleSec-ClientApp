@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // Constants: keys to store data
     let _LAUNCH_KEY = "LAUNCH_KEY"
-    let _SERVER_INFO = "SERVER_INFO"
+    let _SERVER_KEY = "SERVER_INFO"
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -42,6 +42,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         self.save_data()
+        
+        // Todo: Here we will try to run temporary background thread to check if a system breach has been set or if a panic response has been initiated
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -56,18 +58,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let objects = UserDefaults.standard
         // Check if this is the first time launching the app or not
         if objects.integer(forKey: _LAUNCH_KEY) == appLaunchStatus.firstLaunch.rawValue {
-            // Go to first launch view controller
+            print("Apps first launch...")
+            // Set initial view controller as first start view controller
             let main_sb = UIStoryboard(name: "Main", bundle: nil)
             initialViewController = main_sb.instantiateViewController(withIdentifier: "first_start_view_controller") as! FirstStartController
+            objects.set(appLaunchStatus.notFirstLaunch.rawValue, forKey: _LAUNCH_KEY)
             
         } else if objects.integer(forKey: _LAUNCH_KEY) == appLaunchStatus.notFirstLaunch.rawValue {
+            print("Not first launch")
             self.load_data()
             if !server_info.ip_address.isEmpty {
+                print("Loading dashboard")
                 // Go to dashboard
                 let dashboard_sb = UIStoryboard(name: "dashboard", bundle: nil)
                 initialViewController = dashboard_sb.instantiateViewController(withIdentifier: "dashboard_navigation_controller") as! UINavigationController
             } else {
                 // Go to setup
+                print("Loading setup")
                 let setup_sb = UIStoryboard(name: "setup", bundle: nil)
                 initialViewController = setup_sb.instantiateViewController(withIdentifier: "SetupStartViewController")
             }
@@ -77,6 +84,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.window?.rootViewController = initialViewController
             self.window?.makeKeyAndVisible()
         }
+        
+        // Todo: Here we will try to run temporary background thread to check if a system breach has been set or if a panic response has been initiated
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -87,17 +96,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func save_data() {
         /* Saves current app data */
-//        let server_data = NSKeyedArchiver.archivedData(withRootObject: server_info)
-//        let encArray: [Data] = [server_data]
-//        UserDefaults.standard.set(encArray, forKey: _SERVER_INFO)
-//        UserDefaults.standard.synchronize()
+        let ip_address = NSKeyedArchiver.archivedData(withRootObject: server_info.ip_address)
+        let port = NSKeyedArchiver.archivedData(withRootObject: server_info.port)
+        let enc_array: [Data] = [ip_address, port]
+        UserDefaults.standard.set(enc_array, forKey: self._SERVER_KEY)
+        UserDefaults.standard.synchronize()
+        print("Successfully saved data.")
     }
     
     func load_data() {
         /* Loads current data in user defaults */
-//        if let data: [Data] = UserDefaults.standard.object(forKey: _SERVER_INFO) as? [Data] {
-//            server_info = NSKeyedUnarchiver.unarchiveObject(with: data[0] as Data) as? ServerInformation ?? ServerInformation()
-//        }
+        if let data: [Data] = UserDefaults.standard.object(forKey: _SERVER_KEY) as? [Data] {
+            server_info.ip_address = NSKeyedUnarchiver.unarchiveObject(with: data[0] as Data) as! String
+            server_info.port = NSKeyedUnarchiver.unarchiveObject(with: data[1] as Data) as! Int
+            print("Successfullt loaded data.")
+        }
     }
 }
 

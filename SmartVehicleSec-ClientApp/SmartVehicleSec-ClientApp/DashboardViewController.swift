@@ -37,6 +37,7 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
         // Initialize dashboard state
         self.tableview.tableFooterView = UIView()
         self.set_security_config()
+        self.view.layoutIfNeeded()
     }
 
     override func didReceiveMemoryWarning() {

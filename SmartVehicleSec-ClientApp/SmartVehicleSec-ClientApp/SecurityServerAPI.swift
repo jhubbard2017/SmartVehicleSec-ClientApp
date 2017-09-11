@@ -46,15 +46,12 @@ func getWiFiAddress() -> String? {
 }
 
 
-class ServerInformation {
+struct ServerInformation {
     /* Object to store informatino about the server
      
         Attributes:
             - ip_address: local hostname of the server
-            - fwd_ip_address: global hostname of the server (Used when client isn't on same local network as the server)
             - http_port: port number to send request to server API
-            - udp_port: port number to connect to socket for image frame transfers
-            - device_name: unique name of the device so that server knows trustworthy clients are sending requests
      */
     var ip_address = ""
     var port = 0

@@ -10,15 +10,14 @@ import UIKit
 
 class VideoViewController: UIViewController {
 
-    @IBOutlet weak var status: UILabel!
-    @IBOutlet weak var stream_frame: UIImageView!
     @IBOutlet weak var play_pause_btn: UIButton!
     @IBOutlet weak var rewind_btn: UIButton!
     @IBOutlet weak var export_btn: UIButton!
-
+    @IBOutlet weak var webview: UIWebView!
     
     override func viewDidLoad() {
-        super.viewDidLoad()        
+        super.viewDidLoad()
+        self.view.layoutIfNeeded()
     }
     
     override func viewDidDisappear(_ animated: Bool) {

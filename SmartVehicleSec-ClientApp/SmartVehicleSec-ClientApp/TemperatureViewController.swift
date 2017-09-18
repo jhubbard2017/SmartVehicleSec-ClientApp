@@ -80,9 +80,11 @@ class TemperatureViewController: UIViewController {
             } else {
                 // Alert message
                 DispatchQueue.main.async {
+                    self.timer.invalidate()
                     let alert_title = "Error"
                     let alert_message = "Could not get GPS location. Check connection..."
                     app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
+                    self.navigationController?.popViewController(animated: true)
                 }
             }
         })

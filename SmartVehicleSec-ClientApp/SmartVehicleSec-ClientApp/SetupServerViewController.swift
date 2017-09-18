@@ -51,5 +51,4 @@ class SetupServerViewController: UIViewController {
             app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
         }
     }
-
 }

@@ -55,6 +55,7 @@ struct ServerInformation {
      */
     var ip_address = ""
     var port = 0
+    var rd_mac_address = ""
 }
 
 

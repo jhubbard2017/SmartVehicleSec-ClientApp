@@ -1,19 +1,15 @@
 //
-//  SetupContactsViewController.swift
+//  EditContactsViewController.swift
 //  SmartVehicleSec-ClientApp
 //
-//  Created by Developer on 9/6/17.
+//  Created by Developer on 9/15/17.
 //  Copyright © 2017 Jordan Hubbard. All rights reserved.
 //
 
 import UIKit
 
-class SetupContactsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class EditContactsViewController: UIViewController {
 
-    /*
-     Class to add emergency contacts to server for this mobile client
-     */
-    
     @IBOutlet weak var tableview: UITableView!
     
     var contacts = [Contact]()
@@ -29,29 +25,15 @@ class SetupContactsViewController: UIViewController, UITableViewDelegate, UITabl
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.layoutIfNeeded()
-
+        
         // Do any additional setup after loading the view.
         self.tableview.tableFooterView = UIView()
+        self.getContactsFromServer()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-
-    @IBAction func nextAction(_ sender: Any) {
-        // Action method to add contacts on server
-        
-        if self.validateContacts() {
-            // Add contacts to server
-            app_utils.start_activity_indicator(view: self.view, text: "Adding contacts...")
-            self.addContactsToServer()
-        } else {
-            // Inputs not validated. Show alert message
-            let alert_title = "Error"
-            let alert_message = "Please complete all fields for each contact."
-            app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
-        }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -72,14 +54,17 @@ class SetupContactsViewController: UIViewController, UITableViewDelegate, UITabl
             cell.name.tag = contactTextfieldTypes.name.rawValue
             cell.email.tag = contactTextfieldTypes.email.rawValue
             cell.phone.tag = contactTextfieldTypes.phone.rawValue
-            cell.name.addTarget(self, action: #selector(SetupContactsViewController.textFieldValueChanged), for: .editingChanged)
-            cell.email.addTarget(self, action: #selector(SetupContactsViewController.textFieldValueChanged), for: .editingChanged)
-            cell.phone.addTarget(self, action: #selector(SetupContactsViewController.textFieldValueChanged), for: .editingChanged)
-            cell.remove_button.addTarget(self, action: #selector(SetupContactsViewController.removeAction), for: UIControlEvents.touchUpInside)
+            cell.name.text = self.contacts[indexPath.row].name
+            cell.email.text = self.contacts[indexPath.row].email
+            cell.phone.text = self.contacts[indexPath.row].phone
+            cell.name.addTarget(self, action: #selector(EditContactsViewController.textFieldValueChanged), for: .editingChanged)
+            cell.email.addTarget(self, action: #selector(EditContactsViewController.textFieldValueChanged), for: .editingChanged)
+            cell.phone.addTarget(self, action: #selector(EditContactsViewController.textFieldValueChanged), for: .editingChanged)
+            cell.remove_button.addTarget(self, action: #selector(EditContactsViewController.removeAction), for: UIControlEvents.touchUpInside)
             return cell
         }
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.tableview.deselectRow(at: indexPath, animated: true)
         if indexPath.row == self.contacts.count && self.contacts.count < self.MAX_CONTACTS {
@@ -115,6 +100,13 @@ class SetupContactsViewController: UIViewController, UITableViewDelegate, UITabl
         }
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.row == self.contacts.count {
+            return self.ADD_CONTACT_CELL_HEIGHT
+        }
+        return self.CONTACT_CELL_HEIGHT
+    }
+    
     func validateContacts() -> Bool {
         for contact in self.contacts {
             if contact.name.isEmpty && contact.email.isEmpty && contact.phone.isEmpty {
@@ -124,16 +116,57 @@ class SetupContactsViewController: UIViewController, UITableViewDelegate, UITabl
         return true
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.row == self.contacts.count {
-            return self.ADD_CONTACT_CELL_HEIGHT
+    func convertResponseToContacts(data: [NSDictionary]) {
+        // Method to convert Contacts to list of dictionary
+        for contact in data {
+            var new_contact = Contact()
+            new_contact.name = contact.value(forKey: "name") as! String
+            new_contact.email = contact.value(forKey: "email") as! String
+            new_contact.phone = contact.value(forKey: "phone") as! String
+            self.contacts.append(new_contact)
         }
-        return self.CONTACT_CELL_HEIGHT
     }
     
-    func addContactsToServer() {
-        // Method to add contacts to the server
-        let url = "/system/add_contacts"
+    func convertcontactsForServer() -> [NSDictionary] {
+        // Method to convert Contacts to list of dictionary
+        var contacts_dict = [NSDictionary]()
+        for contact in self.contacts {
+            contacts_dict.append(contact.convertToDict())
+        }
+        return contacts_dict
+    }
+    
+    func getContactsFromServer() {
+        // Method to get current contacts on the server
+        let url = "/system/get_contacts"
+        let data = ["md_mac_address": device_uuid!] as NSDictionary
+        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+            let code = response.value(forKey: "code") as! Int
+            if code == server_client._SUCCESS_REPONSE_CODE {
+                let contacts = response.value(forKey: "data") as! [NSDictionary]
+                DispatchQueue.main.async {
+                    // Update UI
+                    self.convertResponseToContacts(data: contacts)
+                    self.tableview.reloadData()
+                    app_utils.stop_activity_indicator()
+                }
+            } else {
+                // Alert message
+                DispatchQueue.main.async {
+                    // Update UI
+                    app_utils.stop_activity_indicator()
+                    let message = response.value(forKey: "message") as! String
+                    let alert_title = "Error"
+                    app_utils.showDefaultAlert(controller: self, title: alert_title, message: message)
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
+        })
+    }
+    
+    func updateContactsOnServer() {
+        // Method to update contacts on the server
+        let url = "/system/update_contacts"
         let data = ["md_mac_address": device_uuid!, "contacts": self.convertcontactsForServer()] as NSDictionary
         server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
@@ -143,10 +176,7 @@ class SetupContactsViewController: UIViewController, UITableViewDelegate, UITabl
                     DispatchQueue.main.async {
                         // Update UI
                         app_utils.stop_activity_indicator()
-                    
-                        // go to next step view controller
-                        let next_vc = self.storyboard?.instantiateViewController(withIdentifier: "SetupFinishViewController") as! SetupFinishViewController
-                        self.present(next_vc, animated: true, completion: nil)
+                        self.navigationController?.popViewController(animated: true)
                     }
                 }
             } else {
@@ -161,13 +191,18 @@ class SetupContactsViewController: UIViewController, UITableViewDelegate, UITabl
             }
         })
     }
-    
-    func convertcontactsForServer() -> [NSDictionary] {
-        // Method to convert Contacts to list of dictionary
-        var contacts_dict = [NSDictionary]()
-        for contact in self.contacts {
-            contacts_dict.append(contact.convertToDict())
+
+    @IBAction func saveAction(_ sender: Any) {
+        // Action nmethod to save updates to contacts
+        if self.validateContacts() {
+            // Update contacts on the server
+            app_utils.start_activity_indicator(view: self.view, text: "Updating contacts")
+            self.updateContactsOnServer()
+        } else {
+            // Inputs not validated. Show alert message
+            let alert_title = "Error"
+            let alert_message = "Please complete all fields for each contact."
+            app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
         }
-        return contacts_dict
     }
 }

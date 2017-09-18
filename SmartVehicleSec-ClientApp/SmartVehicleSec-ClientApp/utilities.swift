@@ -95,3 +95,12 @@ struct Contact {
         return ["name": self.name, "email": self.email, "phone": self.phone] as NSDictionary
     }
 }
+
+// Enums
+enum contactTextfieldTypes: Int {
+    case name = 0, email, phone
+}
+
+enum speedUnitTypes: Int {
+    case mph = 0, kmh
+}

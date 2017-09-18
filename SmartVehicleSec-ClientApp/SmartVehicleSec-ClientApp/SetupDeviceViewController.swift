@@ -47,7 +47,7 @@ class SetupDeviceViewController: UIViewController {
     
     func addDevice() {
         // Method to add new device to the server
-        // Todo: Check if device already on server
+        server_info.rd_mac_address = self.rd_mac_address.text!
         let url = "/system/add_new_device"
         let data = ["name": self.name.text!, "email": self.email.text!, "phone": self.phone.text!, "vehicle": self.vehicle.text!, "md_mac_address": device_uuid!, "rd_mac_address": self.rd_mac_address.text!] as NSDictionary
         server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in

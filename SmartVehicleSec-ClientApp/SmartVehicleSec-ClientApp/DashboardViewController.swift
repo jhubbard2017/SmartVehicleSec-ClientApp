@@ -27,7 +27,6 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
     
     // Constants for tableview cell identifiers
     let cell_names = ["video_cell", "location_cell", "temperature_cell", "logs_cell", "settings_cell", "help_cell"]
-    
     let _NUMBER_OF_SECTIONS = 1
     let _NUMBER_OF_ROWS_IN_SECTION = 6
     

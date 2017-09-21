@@ -8,11 +8,19 @@
 
 import UIKit
 
+// Global constants
+let _PASSCODE_KEY = "PASSCODE_KEY"
+
+enum authenticationType: Int {
+    case passcode = 0, touchID
+}
+
 // Global objects
 var server_info = ServerInformation()
 var app_utils = AppUtilities()
 var server_client = SecurityServerAPI()
 var device_uuid = UIDevice.current.identifierForVendor?.uuidString
+var current_auth_type = authenticationType.passcode.rawValue
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

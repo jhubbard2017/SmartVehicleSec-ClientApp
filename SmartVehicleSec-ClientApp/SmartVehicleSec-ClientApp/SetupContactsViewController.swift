@@ -145,7 +145,7 @@ class SetupContactsViewController: UIViewController, UITableViewDelegate, UITabl
                         app_utils.stop_activity_indicator()
                     
                         // go to next step view controller
-                        let next_vc = self.storyboard?.instantiateViewController(withIdentifier: "SetupFinishViewController") as! SetupFinishViewController
+                        let next_vc = self.storyboard?.instantiateViewController(withIdentifier: "SetupPasscodeViewController") as! SetupPasscodeViewController
                         self.present(next_vc, animated: true, completion: nil)
                     }
                 }

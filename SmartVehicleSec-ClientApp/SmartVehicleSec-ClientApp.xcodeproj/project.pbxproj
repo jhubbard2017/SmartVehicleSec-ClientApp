@@ -18,6 +18,8 @@
 		8B88CA021F6084A10084A403 /* SetupContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B88CA011F6084A10084A403 /* SetupContactsViewController.swift */; };
 		8B88CA041F6085860084A403 /* SetupFinishViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B88CA031F6085860084A403 /* SetupFinishViewController.swift */; };
 		8BB9F7E11F677878003A5E07 /* settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8BB9F7E01F677878003A5E07 /* settings.storyboard */; };
+		8BC9453E1F72280100711FFD /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC9453D1F72280100711FFD /* LocalAuthentication.framework */; };
+		8BD33BEE1F70752000C181A0 /* SetupPasscodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BD33BED1F70752000C181A0 /* SetupPasscodeViewController.swift */; };
 		EF53C00D1F2C694F007BD932 /* SecurityServerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF53C00C1F2C694F007BD932 /* SecurityServerAPI.swift */; };
 		EF53C00F1F2C90F9007BD932 /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF53C00E1F2C90F9007BD932 /* VideoViewController.swift */; };
 		EFA5DEA71F283D4300945A4B /* setup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EFA5DEA61F283D4300945A4B /* setup.storyboard */; };
@@ -65,6 +67,8 @@
 		8B88CA011F6084A10084A403 /* SetupContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupContactsViewController.swift; sourceTree = "<group>"; };
 		8B88CA031F6085860084A403 /* SetupFinishViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupFinishViewController.swift; sourceTree = "<group>"; };
 		8BB9F7E01F677878003A5E07 /* settings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = settings.storyboard; sourceTree = "<group>"; };
+		8BC9453D1F72280100711FFD /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
+		8BD33BED1F70752000C181A0 /* SetupPasscodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupPasscodeViewController.swift; sourceTree = "<group>"; };
 		EF53C00C1F2C694F007BD932 /* SecurityServerAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecurityServerAPI.swift; sourceTree = "<group>"; };
 		EF53C00E1F2C90F9007BD932 /* VideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
 		EF6368661F299D46007E3788 /* GR-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GR-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -95,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8BC9453E1F72280100711FFD /* LocalAuthentication.framework in Frameworks */,
 				EFAB56F81F315651004224BB /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,6 +167,7 @@
 				8B7C70CD1F60781B000F1BBD /* SetupDeviceViewController.swift */,
 				8B88CA011F6084A10084A403 /* SetupContactsViewController.swift */,
 				8B88CA031F6085860084A403 /* SetupFinishViewController.swift */,
+				8BD33BED1F70752000C181A0 /* SetupPasscodeViewController.swift */,
 			);
 			name = "Set Up Components";
 			sourceTree = "<group>";
@@ -169,6 +175,7 @@
 		EFAB56F61F315651004224BB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8BC9453D1F72280100711FFD /* LocalAuthentication.framework */,
 				EFAB56F71F315651004224BB /* MapKit.framework */,
 			);
 			name = Frameworks;
@@ -402,6 +409,7 @@
 				8B7C70CE1F60781B000F1BBD /* SetupDeviceViewController.swift in Sources */,
 				EFA5DEAB1F28473F00945A4B /* utilities.swift in Sources */,
 				8B76F5C81F6BB83000DD77D8 /* EditContactsViewController.swift in Sources */,
+				8BD33BEE1F70752000C181A0 /* SetupPasscodeViewController.swift in Sources */,
 				8B88CA041F6085860084A403 /* SetupFinishViewController.swift in Sources */,
 				EF53C00F1F2C90F9007BD932 /* VideoViewController.swift in Sources */,
 				EFAB56FA1F3161FE004224BB /* CurrentGPSLocation.swift in Sources */,

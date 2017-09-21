@@ -383,7 +383,7 @@
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="17"/>
                                 <color key="tintColor" red="1" green="0.4871341991" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <state key="normal" title="Disarm System"/>
+                                <state key="normal" title="Arm"/>
                                 <connections>
                                     <action selector="system_toggle_action:" destination="gfM-Cf-tni" eventType="touchUpInside" id="q9a-d2-Ple"/>
                                 </connections>

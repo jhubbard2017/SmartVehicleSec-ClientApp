@@ -28,7 +28,18 @@ class EditContactsViewController: UIViewController {
         
         // Do any additional setup after loading the view.
         self.tableview.tableFooterView = UIView()
-        self.getContactsFromServer()
+        app_utils.start_activity_indicator(view: self.view, text: "")
+        api.get_contacts(email: auth_info.email) { error, contacts in
+            app_utils.stop_activity_indicator()
+            if (error == nil) {
+                self.contacts = self.convertContactsFromServer(contacts: contacts)
+                self.tableview.reloadData()
+            } else {
+                let title = "Error (\(String(describing: error?.code)))"
+                let message = error?.domain
+                app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -116,15 +127,16 @@ class EditContactsViewController: UIViewController {
         return true
     }
     
-    func convertResponseToContacts(data: [NSDictionary]) {
-        // Method to convert Contacts to list of dictionary
-        for contact in data {
+    func convertContactsFromServer(contacts: [NSDictionary]) -> [Contact] {
+        var contacts_list = [Contact]()
+        for contact in contacts {
             var new_contact = Contact()
             new_contact.name = contact.value(forKey: "name") as! String
             new_contact.email = contact.value(forKey: "email") as! String
             new_contact.phone = contact.value(forKey: "phone") as! String
-            self.contacts.append(new_contact)
+            contacts_list.append(new_contact)
         }
+        return contacts_list
     }
     
     func convertcontactsForServer() -> [NSDictionary] {
@@ -135,74 +147,29 @@ class EditContactsViewController: UIViewController {
         }
         return contacts_dict
     }
-    
-    func getContactsFromServer() {
-        // Method to get current contacts on the server
-        let url = "/system/get_contacts"
-        let data = ["md_mac_address": device_uuid!] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
-            let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
-                let contacts = response.value(forKey: "data") as! [NSDictionary]
-                DispatchQueue.main.async {
-                    // Update UI
-                    self.convertResponseToContacts(data: contacts)
-                    self.tableview.reloadData()
-                    app_utils.stop_activity_indicator()
-                }
-            } else {
-                // Alert message
-                DispatchQueue.main.async {
-                    // Update UI
-                    app_utils.stop_activity_indicator()
-                    let message = response.value(forKey: "message") as! String
-                    let alert_title = "Error"
-                    app_utils.showDefaultAlert(controller: self, title: alert_title, message: message)
-                    self.navigationController?.popViewController(animated: true)
-                }
-            }
-        })
-    }
-    
-    func updateContactsOnServer() {
-        // Method to update contacts on the server
-        let url = "/system/update_contacts"
-        let data = ["md_mac_address": device_uuid!, "contacts": self.convertcontactsForServer()] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
-            let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
-                let success = response.value(forKey: "data") as! Bool
-                if success {
-                    DispatchQueue.main.async {
-                        // Update UI
-                        app_utils.stop_activity_indicator()
-                        self.navigationController?.popViewController(animated: true)
-                    }
-                }
-            } else {
-                // Alert message
-                DispatchQueue.main.async {
-                    // Update UI
-                    app_utils.stop_activity_indicator()
-                    let message = response.value(forKey: "message") as! String
-                    let alert_title = "Error"
-                    app_utils.showDefaultAlert(controller: self, title: alert_title, message: message)
-                }
-            }
-        })
-    }
 
     @IBAction func saveAction(_ sender: Any) {
-        // Action nmethod to save updates to contacts
+        // Action method to save updates to contacts
+        var title = "Error"
+        var message = ""
         if self.validateContacts() {
             // Update contacts on the server
-            app_utils.start_activity_indicator(view: self.view, text: "Updating contacts")
-            self.updateContactsOnServer()
+            app_utils.start_activity_indicator(view: self.view, text: "")
+            let contacts = self.convertcontactsForServer()
+            api.update_contacts(email: auth_info.email, contacts: contacts) { error in
+                if (error == nil) {
+                    title = "Success!"
+                    message = "Emergency contacts updated."
+                    self.navigationController?.popViewController(animated: true)
+                } else {
+                    let title = "Error (\(String(describing: error?.code)))"
+                    let message = error?.domain
+                }
+            }
         } else {
             // Inputs not validated. Show alert message
-            let alert_title = "Error"
-            let alert_message = "Please complete all fields for each contact."
-            app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
+            let message = "Please complete all fields for each contact."
         }
+        app_utils.showDefaultAlert(controller: self, title: title, message: message!)
     }
 }

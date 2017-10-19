@@ -77,7 +77,7 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
     func get_gps_location() {
         print("Got location: ")
         let url = "/system/location"
-        let data = ["md_mac_address": device_uuid!] as NSDictionary
+        let data = ["email": auth.email, "password": auth.password] as NSDictionary
         server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
             if code == server_client._SUCCESS_REPONSE_CODE {

@@ -39,6 +39,7 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
         self.tableview.tableFooterView = UIView()
         self.set_security_config()
         self.view.layoutIfNeeded()
+        self.view.snapshotView(afterScreenUpdates: true)
     }
 
     override func didReceiveMemoryWarning() {
@@ -69,7 +70,7 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
             - Here, in the callbacks, we need to update the UI to show some form of representation that the system security config has changed.
                 To do that, we change the button and status text, and we also update the status image to reflect the change.
          */
-        let data = ["md_mac_address": device_uuid!] as NSDictionary
+        let data = ["email": auth_info.email, "password": auth.password] as NSDictionary
         if self.system_armed {
             // Disarm system
             let url = "/system/disarm"
@@ -81,15 +82,14 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
                         DispatchQueue.main.async {
                             self.system_armed = false
                             self.status.text = "Disarmed"
-                            self.arm_btn.titleLabel?.text = "Arm"
+                            self.arm_btn.setTitle("Arm System", for: UIControlState.normal)
                             self.status_img.image = UIImage(named: "unlocked.png")
                         }
                     } else {
                         // Alert message
                         DispatchQueue.main.async {
                             // Update UI
-                            self.status.text = "Unknown"
-                            let message = "Failed to arm system"
+                            let message = "Failed to disarm system"
                             let alert_title = "Error"
                             app_utils.showDefaultAlert(controller: self, title: alert_title, message: message)
                         }
@@ -112,7 +112,7 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func armSystem() {
         // Arm system
-        let data = ["md_mac_address": device_uuid!] as NSDictionary
+        let data = ["email": auth.email, "password": auth.password] as NSDictionary
         let url = "/system/arm"
         server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
@@ -122,7 +122,7 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
                     DispatchQueue.main.async {
                         self.system_armed = true
                         self.status.text = "Armed"
-                        self.arm_btn.titleLabel?.text = "Disarm"
+                        self.arm_btn.setTitle("Disarm System", for: UIControlState.normal)
                         self.status_img.image = UIImage(named: "locked.png")
                     }
                 } else {
@@ -153,7 +153,7 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
                 Show UI reflections of that current state.
          */
         let url = "/system/security_config"
-        let data = ["md_mac_address": device_uuid!] as NSDictionary
+        let data = ["email": auth.email, "password": auth.password] as NSDictionary
         server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
             if code == server_client._SUCCESS_REPONSE_CODE {
@@ -162,7 +162,7 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
                 if system_armed {
                     DispatchQueue.main.async {
                         // Update UI
-                        self.arm_btn.titleLabel?.text = "Disarm"
+                        self.arm_btn.setTitle("Disarm System", for: UIControlState.normal)
                         self.status_img.image = UIImage(named: "locked.png")
                         self.system_armed = true
                         self.status.text = "Armed"
@@ -170,7 +170,7 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
                 } else {
                     DispatchQueue.main.async {
                         // Update UI
-                        self.arm_btn.titleLabel?.text = "Arm"
+                        self.arm_btn.setTitle("Arm System", for: UIControlState.normal)
                         self.status_img.image = UIImage(named: "unlocked.png")
                         self.system_armed = false
                         self.status.text = "Disarmed"
@@ -280,7 +280,7 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
         })
     }
     
-    func errorMessageForLAErrorCode(errorCode: Int) -> String{
+    func errorMessageForLAErrorCode(errorCode: Int) -> String {
         var message = ""
         switch errorCode {
         case LAError.appCancel.rawValue:

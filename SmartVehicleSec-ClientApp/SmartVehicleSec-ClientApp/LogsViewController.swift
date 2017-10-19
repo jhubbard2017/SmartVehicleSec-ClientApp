@@ -38,7 +38,7 @@ class LogsViewController: UIViewController, UITableViewDelegate, UITableViewData
     func loadLogs() {
         // Method to add contacts to the server
         let url = "/system/logs"
-        let data = ["md_mac_address": device_uuid!] as NSDictionary
+        let data = ["email": auth.email, "password": auth.password] as NSDictionary
         server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
             if code == server_client._SUCCESS_REPONSE_CODE {

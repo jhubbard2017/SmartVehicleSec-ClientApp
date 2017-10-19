@@ -18,9 +18,10 @@ class VideoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.layoutIfNeeded()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
+        let url_string = "http://\(server_info.ip_address):\(server_info.port)"
+        let url = NSURL(string: url_string)
+        let requestObj = NSURLRequest(url: url! as URL)
+        self.webview.loadRequest(requestObj as URLRequest)
     }
 
     override func didReceiveMemoryWarning() {

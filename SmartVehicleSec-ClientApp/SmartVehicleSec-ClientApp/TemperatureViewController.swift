@@ -32,6 +32,7 @@ class TemperatureViewController: UIViewController {
                                           userInfo: nil, repeats: true)
         self.timer.fire()
         self.unit.text = "Fahrenheit"
+        self.convertButton.setTitle("Show in Celcius", for: UIControlState.normal)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -50,18 +51,18 @@ class TemperatureViewController: UIViewController {
             // Convert to celcius
             self.current_unit = unitTypes.celcius.rawValue
             self.unit.text = "Celcius"
-            self.convertButton.titleLabel?.text = "Show in Fahrenheit"
+            self.convertButton.setTitle("Show in Fahrenheit", for: UIControlState.normal)
         } else {
             // Convert to fahrenheit
             self.current_unit = unitTypes.fahrenheit.rawValue
             self.unit.text = "Fahrenheit"
-            self.convertButton.titleLabel?.text = "Show in Celcius"
+            self.convertButton.setTitle("Show in Celcius", for: UIControlState.normal)
         }
     }
     
     func getTemperature() {
         let url = "/system/temperature"
-        let data = ["md_mac_address": device_uuid!] as NSDictionary
+        let data = ["email": auth.email, "password": auth.password] as NSDictionary
         server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
             if code == server_client._SUCCESS_REPONSE_CODE {

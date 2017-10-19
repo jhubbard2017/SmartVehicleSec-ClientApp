@@ -15,7 +15,6 @@ class SetupContactsViewController: UIViewController, UITableViewDelegate, UITabl
      */
     
     @IBOutlet weak var tableview: UITableView!
-    
     var contacts = [Contact]()
     
     // Constants
@@ -38,14 +37,23 @@ class SetupContactsViewController: UIViewController, UITableViewDelegate, UITabl
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
     @IBAction func nextAction(_ sender: Any) {
         // Action method to add contacts on server
-        
         if self.validateContacts() {
-            // Add contacts to server
-            app_utils.start_activity_indicator(view: self.view, text: "Adding contacts...")
-            self.addContactsToServer()
+            app_utils.start_activity_indicator(view: self.view, text: "")
+            let contacts = self.convertcontactsForServer()
+            api.add_contacts(email: auth_info.email, contacts: contacts) { error in
+                app_utils.stop_activity_indicator()
+                if (error == nil) {
+                    let next_vc = self.storyboard?.instantiateViewController(withIdentifier: "SetupFinishViewController") as! SetupFinishViewController
+                    self.present(next_vc, animated: true, completion: nil)
+                } else {
+                    let title = "Error (\(String(describing: error?.code)))"
+                    let message = error?.domain
+                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                }
+            }
         } else {
             // Inputs not validated. Show alert message
             let alert_title = "Error"
@@ -129,37 +137,6 @@ class SetupContactsViewController: UIViewController, UITableViewDelegate, UITabl
             return self.ADD_CONTACT_CELL_HEIGHT
         }
         return self.CONTACT_CELL_HEIGHT
-    }
-    
-    func addContactsToServer() {
-        // Method to add contacts to the server
-        let url = "/system/add_contacts"
-        let data = ["md_mac_address": device_uuid!, "contacts": self.convertcontactsForServer()] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
-            let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
-                let success = response.value(forKey: "data") as! Bool
-                if success {
-                    DispatchQueue.main.async {
-                        // Update UI
-                        app_utils.stop_activity_indicator()
-                    
-                        // go to next step view controller
-                        let next_vc = self.storyboard?.instantiateViewController(withIdentifier: "SetupPasscodeViewController") as! SetupPasscodeViewController
-                        self.present(next_vc, animated: true, completion: nil)
-                    }
-                }
-            } else {
-                // Alert message
-                DispatchQueue.main.async {
-                    // Update UI
-                    app_utils.stop_activity_indicator()
-                    let message = response.value(forKey: "message") as! String
-                    let alert_title = "Error"
-                    app_utils.showDefaultAlert(controller: self, title: alert_title, message: message)
-                }
-            }
-        })
     }
     
     func convertcontactsForServer() -> [NSDictionary] {

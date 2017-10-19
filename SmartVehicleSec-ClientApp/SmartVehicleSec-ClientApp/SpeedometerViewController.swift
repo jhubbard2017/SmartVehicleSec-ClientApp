@@ -20,7 +20,7 @@ class SpeedometerViewController: UIViewController {
     var timer: Timer!
     var current_unit = speedUnitTypes.mph.rawValue
     
-    let kmh_multiplier = Float(1.60934)
+    let kmh_multiplier = Float(1.6)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,13 +29,14 @@ class SpeedometerViewController: UIViewController {
         self.timer = Timer.scheduledTimer(timeInterval: 1.5, target: self,
                                           selector: #selector(SpeedometerViewController.getSpeedometerData),
                                           userInfo: nil, repeats: true)
-        self.timer.fire()
+        self.current_unit = speedUnitTypes.mph.rawValue
         self.unit.text = "MPH"
         self.speed.text = "0.0"
         self.altitude.text = "0.0 ft"
         self.heading.text = "0.0 ft"
         self.climb.text = "0.0 ft"
-        self.convertBtn.titleLabel?.text = "Show in KMH"
+        self.convertBtn.setTitle("Show in KMH", for: UIControlState.normal)
+        self.timer.fire()
     }
 
     override func didReceiveMemoryWarning() {
@@ -55,18 +56,18 @@ class SpeedometerViewController: UIViewController {
             // Convert to kmh
             self.current_unit = speedUnitTypes.kmh.rawValue
             self.unit.text = "KMH"
-            self.convertBtn.titleLabel?.text = "Show in MPH"
+            self.convertBtn.setTitle("Show in MPH", for: UIControlState.normal)
         } else {
             // Convert to mph
             self.current_unit = speedUnitTypes.mph.rawValue
             self.unit.text = "MPH"
-            self.convertBtn.titleLabel?.text = "Show in KMH"
+            self.convertBtn.setTitle("Show in KMH", for: UIControlState.normal)
         }
     }
     
     func getSpeedometerData() {
         let url = "/system/speedometer"
-        let data = ["md_mac_address": device_uuid!] as NSDictionary
+        let data = ["email": auth_info.email] as NSDictionary
         server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
             if code == server_client._SUCCESS_REPONSE_CODE {
@@ -76,13 +77,13 @@ class SpeedometerViewController: UIViewController {
                 let climb_data = data.value(forKey: "climb") as! Float
                 
                 var speed_data = data.value(forKey: "speed") as! Float
-                if self.current_unit == speedUnitTypes.mph.rawValue {
+                if self.current_unit == speedUnitTypes.kmh.rawValue {
                     speed_data = speed_data * self.kmh_multiplier
                 }
-                print("Got temperature: ")
+                print("Got speedometer data: \(data)")
                 // Update UI
                 DispatchQueue.main.async {
-                    self.speed.text = String(speed_data)
+                    self.speed.text = String(Int(speed_data))
                     self.altitude.text = String("\(altitude_data) ft")
                     self.heading.text = String("\(heading_data) deg")
                     self.climb.text = String("\(climb_data) ft/min")
@@ -92,7 +93,7 @@ class SpeedometerViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.timer.invalidate()
                     let alert_title = "Error"
-                    let alert_message = "Could not get GPS location. Check connection..."
+                    let alert_message = "Could not get data. Check connection..."
                     app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
                     self.navigationController?.popViewController(animated: true)
                 }

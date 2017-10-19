@@ -1,0 +1,6 @@
+framework module Pods_SmartVehicleSec_ClientApp {
+  umbrella header "Pods-SmartVehicleSec-ClientApp-umbrella.h"
+
+  export *
+  module * { export * }
+}

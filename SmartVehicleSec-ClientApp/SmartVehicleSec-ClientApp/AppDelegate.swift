@@ -7,37 +7,40 @@
 //
 
 import UIKit
+import IQKeyboardManagerSwift
 
-// Global constants
 let _PASSCODE_KEY = "PASSCODE_KEY"
+let _DEVICE_SET_KEY = "DEVICE_SET_KEY"
+let objects = UserDefaults.standard
 
 enum authenticationType: Int {
     case passcode = 0, touchID
 }
+enum appLaunchStatus: Int {
+    case firstLaunch = 0, notFirstLaunch
+}
+enum appLoadingStatus: Int {
+    case background = 0, notbackground
+}
 
 // Global objects
-var server_info = ServerInformation()
+var api = APIHelperMethods()
+var auth_info = AuthInfo()
 var app_utils = AppUtilities()
-var server_client = SecurityServerAPI()
-var device_uuid = UIDevice.current.identifierForVendor?.uuidString
-var current_auth_type = authenticationType.passcode.rawValue
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    // App lanuch status enumeration
-    enum appLaunchStatus: Int {
-        case firstLaunch = 0, notFirstLaunch
-    }
-    
     // Constants: keys to store data
     let _LAUNCH_KEY = "LAUNCH_KEY"
-    let _SERVER_KEY = "SERVER_INFO"
+    let _LOADING_KEY = "LOADING_FROM_BACKGROUND"
+    let _DATA_KEY = "DATA_INFO"
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        IQKeyboardManager.sharedManager().enable = true
         return true
     }
 
@@ -63,61 +66,68 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.main.bounds)
         var initialViewController: UIViewController!
         
-        let objects = UserDefaults.standard
-        // Check if this is the first time launching the app or not
         if objects.integer(forKey: _LAUNCH_KEY) == appLaunchStatus.firstLaunch.rawValue {
-            print("Apps first launch...")
-            // Set initial view controller as first start view controller
+            // First launch
             let main_sb = UIStoryboard(name: "Main", bundle: nil)
-            initialViewController = main_sb.instantiateViewController(withIdentifier: "first_start_view_controller") as! FirstStartController
+            initialViewController = main_sb.instantiateViewController(withIdentifier: "FirstStartController") as! FirstStartController
             objects.set(appLaunchStatus.notFirstLaunch.rawValue, forKey: _LAUNCH_KEY)
             
         } else if objects.integer(forKey: _LAUNCH_KEY) == appLaunchStatus.notFirstLaunch.rawValue {
-            print("Not first launch")
+            // Load data
             self.load_data()
-            if !server_info.ip_address.isEmpty {
-                print("Loading dashboard")
-                // Go to dashboard
+            
+            // Check if app loaded from background and authentication parameters are loaded from user defaults
+            if objects.integer(forKey: _LOADING_KEY) == appLoadingStatus.background.rawValue {
+                // load dashboard (user should be already authenticated on server)
                 let dashboard_sb = UIStoryboard(name: "dashboard", bundle: nil)
                 initialViewController = dashboard_sb.instantiateViewController(withIdentifier: "dashboard_navigation_controller") as! UINavigationController
             } else {
-                // Go to setup
-                print("Loading setup")
-                let setup_sb = UIStoryboard(name: "setup", bundle: nil)
-                initialViewController = setup_sb.instantiateViewController(withIdentifier: "SetupStartViewController")
+                // Go to login view controller (User not authenticated)
+                let sb = UIStoryboard(name: "authentication", bundle: nil)
+                initialViewController = sb.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
             }
+
         }
         
         if initialViewController != nil {
             self.window?.rootViewController = initialViewController
             self.window?.makeKeyAndVisible()
         }
-        
-        // Todo: Here we will try to run temporary background thread to check if a system breach has been set or if a panic response has been initiated
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Stop session
+        api.logout(email: auth_info.email) { error in
+            if (error == nil) {
+                objects.set(appLoadingStatus.notbackground.rawValue, forKey: self._LOADING_KEY)
+            } else {
+                // Error 
+            }
+        }
         self.save_data()
     }
     
     func save_data() {
         /* Saves current app data */
-        let ip_address = NSKeyedArchiver.archivedData(withRootObject: server_info.ip_address)
-        let port = NSKeyedArchiver.archivedData(withRootObject: server_info.port)
-        let enc_array: [Data] = [ip_address, port]
-        UserDefaults.standard.set(enc_array, forKey: self._SERVER_KEY)
+        let email = NSKeyedArchiver.archivedData(withRootObject: auth_info.email)
+        let password = NSKeyedArchiver.archivedData(withRootObject: auth_info.password)
+        let host = NSKeyedArchiver.archivedData(withRootObject: auth_info.host)
+        let port = NSKeyedArchiver.archivedData(withRootObject: auth_info.port)
+        let enc_array: [Data] = [email, password, host, port]
+        UserDefaults.standard.set(enc_array, forKey: self._DATA_KEY)
         UserDefaults.standard.synchronize()
         print("Successfully saved data.")
     }
     
     func load_data() {
         /* Loads current data in user defaults */
-        if let data: [Data] = UserDefaults.standard.object(forKey: _SERVER_KEY) as? [Data] {
-            server_info.ip_address = NSKeyedUnarchiver.unarchiveObject(with: data[0] as Data) as! String
-            server_info.port = NSKeyedUnarchiver.unarchiveObject(with: data[1] as Data) as! Int
-            print("Successfullt loaded data.")
+        if let data: [Data] = UserDefaults.standard.object(forKey: self._DATA_KEY) as? [Data] {
+            auth_info.email = NSKeyedUnarchiver.unarchiveObject(with: data[0] as Data) as! String
+            auth_info.password = NSKeyedUnarchiver.unarchiveObject(with: data[1] as Data) as! String
+            auth_info.host = NSKeyedUnarchiver.unarchiveObject(with: data[2] as Data) as! String
+            auth_info.port = NSKeyedUnarchiver.unarchiveObject(with: data[3] as Data) as! Int
+            print("Successfully loaded data.")
         }
     }
 }

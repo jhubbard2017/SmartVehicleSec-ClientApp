@@ -27,9 +27,8 @@ class FirstStartController: UIViewController {
     }
 
     @IBAction func get_started_action(_ sender: Any) {
-        let setup_sb = UIStoryboard(name: "setup", bundle: nil)
-        let setup_vc = setup_sb.instantiateViewController(withIdentifier: "SetupStartViewController")
-        self.present(setup_vc, animated: true, completion: nil)
+        let next_vc = self.storyboard?.instantiateViewController(withIdentifier: "SetupServerViewController") as! SetupServerViewController
+        self.present(next_vc, animated: true, completion: nil)
     }
 }
 

@@ -32,7 +32,7 @@ class EditContactsViewController: UIViewController {
         api.get_contacts(email: auth_info.email) { error, contacts in
             app_utils.stop_activity_indicator()
             if (error == nil) {
-                self.contacts = self.convertContactsFromServer(contacts: contacts)
+                self.contacts = self.convertContactsFromServer(contacts: contacts!)
                 self.tableview.reloadData()
             } else {
                 let title = "Error (\(String(describing: error?.code)))"
@@ -162,14 +162,14 @@ class EditContactsViewController: UIViewController {
                     message = "Emergency contacts updated."
                     self.navigationController?.popViewController(animated: true)
                 } else {
-                    let title = "Error (\(String(describing: error?.code)))"
-                    let message = error?.domain
+                    title = "Error (\(String(describing: error?.code)))"
+                    message = (error?.domain)!
                 }
             }
         } else {
             // Inputs not validated. Show alert message
-            let message = "Please complete all fields for each contact."
+            message = "Please complete all fields for each contact."
         }
-        app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+        app_utils.showDefaultAlert(controller: self, title: title, message: message)
     }
 }

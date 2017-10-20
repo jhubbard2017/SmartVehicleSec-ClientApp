@@ -66,39 +66,26 @@ class SpeedometerViewController: UIViewController {
     }
     
     func getSpeedometerData() {
-        let url = "/system/speedometer"
-        let data = ["email": auth_info.email] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
-            let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
-                let data = response.value(forKey: "data") as! NSDictionary
-                let altitude_data = data.value(forKey: "altitude") as! Float
-                let heading_data = data.value(forKey: "heading") as! Float
-                let climb_data = data.value(forKey: "climb") as! Float
+        api.get_speedometer(email: auth_info.email) { error, speedometer_data in
+            if (error == nil) {
+                let altitude_data = speedometer_data?.value(forKey: "altitude") as! Float
+                let heading_data = speedometer_data?.value(forKey: "heading") as! Float
+                let climb_data = speedometer_data?.value(forKey: "climb") as! Float
                 
-                var speed_data = data.value(forKey: "speed") as! Float
+                var speed_data = speedometer_data?.value(forKey: "speed") as! Float
                 if self.current_unit == speedUnitTypes.kmh.rawValue {
                     speed_data = speed_data * self.kmh_multiplier
                 }
-                print("Got speedometer data: \(data)")
-                // Update UI
-                DispatchQueue.main.async {
-                    self.speed.text = String(Int(speed_data))
-                    self.altitude.text = String("\(altitude_data) ft")
-                    self.heading.text = String("\(heading_data) deg")
-                    self.climb.text = String("\(climb_data) ft/min")
-                }
+                
+                self.speed.text = String(Int(speed_data))
+                self.altitude.text = String("\(altitude_data) ft")
+                self.heading.text = String("\(heading_data) deg")
+                self.climb.text = String("\(climb_data) ft/min")
             } else {
-                // Alert message
-                DispatchQueue.main.async {
-                    self.timer.invalidate()
-                    let alert_title = "Error"
-                    let alert_message = "Could not get data. Check connection..."
-                    app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
-                    self.navigationController?.popViewController(animated: true)
-                }
+                let title = "Error (\(String(describing: error?.code)))"
+                let message = error?.domain
+                app_utils.showDefaultAlert(controller: self, title: title, message: message!)
             }
-        })
+        }
     }
-
 }

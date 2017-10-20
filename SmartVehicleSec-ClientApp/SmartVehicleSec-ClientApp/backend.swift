@@ -23,7 +23,7 @@ class APIHelperMethods {
     
     func send_request(url: String, data: NSDictionary, method: String, completion: @escaping (_ return_data: NSDictionary) -> Void) {
         // The current address of the server may change, since we don't have a static IP address, and the options for the client is either the same wifi network or a different wifi network. To solve this issue, we check to see if we are on wifi or LTE (client side.)
-        let actual_url = "http://" + server_info.ip_address + ":" + String(server_info.port) + url
+        let actual_url = "http://" + auth_info.host + ":" + String(auth_info.port) + url
         let nsurl = URL(string: actual_url)
         var urlRequest = URLRequest(url: nsurl!)
         urlRequest.httpMethod = method
@@ -59,17 +59,17 @@ class APIHelperMethods {
         // Method to authenticate user
         let url = "/authentication/login"
         let data = ["email": email, "password": password] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
+            if code == self._SUCCESS_REPONSE_CODE {
                 let authenticated = response.value(forKey: "data") as! Bool
                 if authenticated {
-                    self.email = email
-                    self.password = password
+                    auth_info.email = email
+                    auth_info.password = password
                     completion(nil)
                 }
             } else {
-                let error = NSError(domain: response.value(forKey: "message") as! String, code: server_client._FAILURE_RESPONSE_CODE, userInfo: nil)
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
                 completion(error)
             }
         })
@@ -79,17 +79,17 @@ class APIHelperMethods {
         // Method to create user account
         let url = "/users/add"
         let data = ["firstname": firstname, "lastname": lastname, "email": email, "phone": phone, "vehicle": vehicle, "system_id": system_id, "password": password] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
+            if code == self._SUCCESS_REPONSE_CODE {
                 let success = response.value(forKey: "data") as! Bool
                 if success {
-                    self.email = email
-                    self.password = password
+                    auth_info.email = email
+                    auth_info.password = password
                     completion(nil)
                 }
             } else {
-                let error = NSError(domain: response.value(forKey: "message") as! String, code: server_client._FAILURE_RESPONSE_CODE, userInfo: nil)
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
                 completion(error)
             }
         })
@@ -99,15 +99,15 @@ class APIHelperMethods {
         // Method to logout user
         let url = "/authentication/logout"
         let data = ["email": email] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
+            if code == self._SUCCESS_REPONSE_CODE {
                 let success = response.value(forKey: "data") as! Bool
                 if success {
                     completion(nil)
                 }
             } else {
-                let error = NSError(domain: response.value(forKey: "message") as! String, code: server_client._FAILURE_RESPONSE_CODE, userInfo: nil)
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
                 completion(error)
             }
         })
@@ -116,15 +116,15 @@ class APIHelperMethods {
     func forgot_password(email: String, completion: @escaping (_ error: NSError?) -> Void) {
         let url = "/authentication/forgot_password"
         let data = ["email": email] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
+            if code == self._SUCCESS_REPONSE_CODE {
                 let success = response.value(forKey: "data") as! Bool
                 if success {
                     completion(nil)
                 }
             } else {
-                let error = NSError(domain: response.value(forKey: "message") as! String, code: server_client._FAILURE_RESPONSE_CODE, userInfo: nil)
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
                 completion(error)
             }
         })
@@ -133,30 +133,30 @@ class APIHelperMethods {
     func add_contacts(email: String, contacts: [NSDictionary], completion: @escaping (_ error: NSError?) -> Void) {
         let url = "/emergency_contacts/add"
         let data = ["email": email, "contacts": contacts] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
+            if code == self._SUCCESS_REPONSE_CODE {
                 let success = response.value(forKey: "data") as! Bool
                 if success {
                     completion(nil)
                 }
             } else {
-                let error = NSError(domain: response.value(forKey: "message") as! String, code: server_client._FAILURE_RESPONSE_CODE, userInfo: nil)
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
                 completion(error)
             }
         })
     }
     
-    func get_contacts(email: String, completion: @escaping (_ error: NSError?, _ contacts: [NSDictionary]) -> Void) {
+    func get_contacts(email: String, completion: @escaping (_ error: NSError?, _ contacts: [NSDictionary]?) -> Void) {
         let url = "/emergency_contacts/get"
         let data = ["email": email] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
+            if code == self._SUCCESS_REPONSE_CODE {
                 let contacts = response.value(forKey: "data") as! [NSDictionary]
                 completion(nil, contacts)
             } else {
-                let error = NSError(domain: response.value(forKey: "message") as! String, code: server_client._FAILURE_RESPONSE_CODE, userInfo: nil)
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
                 completion(error, nil)
             }
         })
@@ -165,31 +165,31 @@ class APIHelperMethods {
     func update_contacts(email: String, contacts: [NSDictionary], completion: @escaping (_ error: NSError?) -> Void) {
         let url = "/emergency_contacts/update"
         let data = ["email": email, "contacts": contacts] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
+            if code == self._SUCCESS_REPONSE_CODE {
                 let success = response.value(forKey: "data") as! Bool
                 if success {
                     completion(nil)
                 }
             } else {
-                let error = NSError(domain: response.value(forKey: "message") as! String, code: server_client._FAILURE_RESPONSE_CODE, userInfo: nil)
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
                 completion(error)
             }
         })
     }
     
-    func get_user(completion: @escaping (_ error: NSError?, _ user: NSDictionary) -> Void) {
+    func get_user(email: String, completion: @escaping (_ error: NSError?, _ user: NSDictionary?) -> Void) {
         // Method to retrieve user information
         let url = "/users/get"
         let data = ["email": email] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
+            if code == self._SUCCESS_REPONSE_CODE {
                 let user = response.value(forKey: "data") as! NSDictionary
                 completion(nil, user)
             } else {
-                let error = NSError(domain: response.value(forKey: "message") as! String, code: server_client._FAILURE_RESPONSE_CODE, userInfo: nil)
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
                 completion(error, nil)
             }
         })
@@ -199,15 +199,15 @@ class APIHelperMethods {
         // Method to update user information
         let url = "/users/update"
         let data = ["firstname": firstname, "lastname": lastname, "email": email, "phone": phone, "vehicle": vehicle, "system_id": system_id] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
-                let success = response.value(forKey: "data") as! NSDictionary
+            if code == self._SUCCESS_REPONSE_CODE {
+                let success = response.value(forKey: "data") as! Bool
                 if success {
                     completion(nil)
                 }
             } else {
-                let error = NSError(domain: response.value(forKey: "message") as! String, code: server_client._FAILURE_RESPONSE_CODE, userInfo: nil)
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
                 completion(error)
             }
         })
@@ -216,30 +216,30 @@ class APIHelperMethods {
     func change_user_password(email: String, old_password: String, new_password: String, completion: @escaping (_ error: NSError?) -> Void) {
         let url = "/users/change_password"
         let data = ["email": email, "old_password": old_password, "new_password": new_password] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
-                let success = response.value(forKey: "data") as! NSDictionary
+            if code == self._SUCCESS_REPONSE_CODE {
+                let success = response.value(forKey: "data") as! Bool
                 if success {
                     completion(nil)
                 }
             } else {
-                let error = NSError(domain: response.value(forKey: "message") as! String, code: server_client._FAILURE_RESPONSE_CODE, userInfo: nil)
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
                 completion(error)
             }
         })
     }
     
-    func get_config(email: String, completion: @escaping (_ error: NSError?, _ config: NSDictionary) -> Void) {
+    func get_config(email: String, completion: @escaping (_ error: NSError?, _ config: NSDictionary?) -> Void) {
         let url = "/security/get_config"
         let data = ["email": email] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
+            if code == self._SUCCESS_REPONSE_CODE {
                 let config = response.value(forKey: "data") as! NSDictionary
                 completion(nil, config)
             } else {
-                let error = NSError(domain: response.value(forKey: "message") as! String, code: server_client._FAILURE_RESPONSE_CODE, userInfo: nil)
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
                 completion(error, nil)
             }
         })
@@ -248,15 +248,15 @@ class APIHelperMethods {
     func arm_system(email: String, completion: @escaping (_ error: NSError?) -> Void) {
         let url = "/security/arm"
         let data = ["email": email] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
+            if code == self._SUCCESS_REPONSE_CODE {
                 let success = response.value(forKey: "data") as! Bool
                 if success {
                     completion(nil)
                 }
             } else {
-                let error = NSError(domain: response.value(forKey: "message") as! String, code: server_client._FAILURE_RESPONSE_CODE, userInfo: nil)
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
                 completion(error)
             }
         })
@@ -265,30 +265,75 @@ class APIHelperMethods {
     func disarm_system(email: String, completion: @escaping (_ error: NSError?) -> Void) {
         let url = "/security/disarm"
         let data = ["email": email] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
-                let success = response.value(forKey: "data") as! NSDictionary
+            if code == self._SUCCESS_REPONSE_CODE {
+                let success = response.value(forKey: "data") as! Bool
                 if success {
                     completion(nil)
                 }
             } else {
-                let error = NSError(domain: response.value(forKey: "message") as! String, code: server_client._FAILURE_RESPONSE_CODE, userInfo: nil)
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
                 completion(error)
             }
         })
     }
     
-    func get_logs(email: String, completion: @escaping (_ error: NSError?, _ logs: [NSDictionary]) -> Void) {
+    func get_logs(email: String, completion: @escaping (_ error: NSError?, _ logs: [NSDictionary]?) -> Void) {
         let url = "/security/get_logs"
         let data = ["email": email] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
             let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
+            if code == self._SUCCESS_REPONSE_CODE {
                 let logs = response.value(forKey: "data") as! [NSDictionary]
                 completion(nil, logs)
             } else {
-                let error = NSError(domain: response.value(forKey: "message") as! String, code: server_client._FAILURE_RESPONSE_CODE, userInfo: nil)
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
+                completion(error, nil)
+            }
+        })
+    }
+    
+    func get_temperature(email: String, completion: @escaping (_ error: NSError?, _ temperature: NSDictionary?) -> Void) {
+        let url = "/systems/temperature"
+        let data = ["email": email] as NSDictionary
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+            let code = response.value(forKey: "code") as! Int
+            if code == self._SUCCESS_REPONSE_CODE {
+                let temperature = response.value(forKey: "data") as! NSDictionary
+                completion(nil, temperature)
+            } else {
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
+                completion(error, nil)
+            }
+        })
+    }
+    
+    func get_location(email: String, completion: @escaping (_ error: NSError?, _ location: NSDictionary?) -> Void) {
+        let url = "/systems/location"
+        let data = ["email": email] as NSDictionary
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+            let code = response.value(forKey: "code") as! Int
+            if code == self._SUCCESS_REPONSE_CODE {
+                let location = response.value(forKey: "data") as! NSDictionary
+                completion(nil, location)
+            } else {
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
+                completion(error, nil)
+            }
+        })
+    }
+    
+    func get_speedometer(email: String, completion: @escaping (_ error: NSError?, _ speedometer: NSDictionary?) -> Void) {
+        let url = "/systems/speedometer"
+        let data = ["email": email] as NSDictionary
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+            let code = response.value(forKey: "code") as! Int
+            if code == self._SUCCESS_REPONSE_CODE {
+                let speedometer = response.value(forKey: "data") as! NSDictionary
+                completion(nil, speedometer)
+            } else {
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
                 completion(error, nil)
             }
         })

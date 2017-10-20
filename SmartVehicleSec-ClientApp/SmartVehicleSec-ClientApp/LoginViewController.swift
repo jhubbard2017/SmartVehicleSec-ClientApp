@@ -13,6 +13,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var email: UITextField!
     @IBOutlet weak var password: UITextField!
+    @IBOutlet weak var touchIDBtn: UIButton!
     
     var textfieldList = [UITextField]()
     let password_min_count = 8
@@ -24,6 +25,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         self.textfieldList = [self.email, self.password]
         self.email.delegate = self
         self.password.delegate = self
+        
+        if is_first_authentication {
+            self.touchIDBtn.isHidden = true
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -65,7 +70,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         api.login(email: email, password: password) { error in
             app_utils.stop_activity_indicator()
             if (error == nil) {
-                // Todo: Go to dashboard
+                user_authenticated = true
+                is_first_authentication = false
+                let sb = UIStoryboard(name: "dashboard", bundle: nil)
+                let next_vc = sb.instantiateViewController(withIdentifier: "DashboardNavigationController") as! UINavigationController
+                self.present(next_vc, animated: true, completion: nil)
             } else {
                 let title = "Error (\(String(describing: error?.code)))"
                 let message = error?.domain
@@ -92,7 +101,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             if success {
                 // Fingerprint recognized
                 app_utils.start_activity_indicator(view: self.view, text: "")
-                self.loginUser(email: auth.email, password: auth.password)
+                self.loginUser(email: auth_info.email, password: auth_info.password)
             } else {
                 // Check if there is an error
                 if let auth_error = error {

@@ -27,39 +27,22 @@ class LogsViewController: UIViewController, UITableViewDelegate, UITableViewData
         // Do any additional setup after loading the view.
         self.tableview.tableFooterView = UIView()
         app_utils.start_activity_indicator(view: self.view, text: "Loading Logs")
-        self.loadLogs()
+        api.get_logs(email: auth_info.email) { error, data_logs in
+            app_utils.stop_activity_indicator()
+            if (error == nil) {
+                self.logs = data_logs!
+                self.tableview.reloadData()
+            } else {
+                let title = "Error (\(String(describing: error?.code)))"
+                let message = error?.domain
+                app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    func loadLogs() {
-        // Method to add contacts to the server
-        let url = "/system/logs"
-        let data = ["email": auth.email, "password": auth.password] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
-            let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
-                let data = response.value(forKey: "data") as! [NSDictionary]
-                DispatchQueue.main.async {
-                    // Update UI
-                    app_utils.stop_activity_indicator()
-                    self.logs = data
-                    self.tableview.reloadData()
-                }
-            } else {
-                // Alert message
-                DispatchQueue.main.async {
-                    // Update UI
-                    app_utils.stop_activity_indicator()
-                    let message = response.value(forKey: "message") as! String
-                    let alert_title = "Error"
-                    app_utils.showDefaultAlert(controller: self, title: alert_title, message: message)
-                }
-            }
-        })
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {

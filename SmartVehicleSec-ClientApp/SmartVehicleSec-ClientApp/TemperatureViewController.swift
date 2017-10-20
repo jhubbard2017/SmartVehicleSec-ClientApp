@@ -61,33 +61,18 @@ class TemperatureViewController: UIViewController {
     }
     
     func getTemperature() {
-        let url = "/system/temperature"
-        let data = ["email": auth.email, "password": auth.password] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
-            let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
-                let data = response.value(forKey: "data") as! NSDictionary
-                var temp: Float!
+        api.get_temperature(email: auth_info.email) { error, temperature_data in
+            if (error == nil) {
                 if self.current_unit == unitTypes.fahrenheit.rawValue {
-                    temp = data.value(forKey: "fahrenheit") as! Float
+                    self.temperature.text = String(describing: temperature_data?.value(forKey: "fahrenheit") as! Float)
                 } else {
-                    temp = data.value(forKey: "celcius") as! Float
-                }
-                print("Got temperature: ")
-                // Update UI
-                DispatchQueue.main.async {
-                    self.temperature.text = String(temp)
+                    self.temperature.text = String(describing: temperature_data?.value(forKey: "celcius") as! Float)
                 }
             } else {
-                // Alert message
-                DispatchQueue.main.async {
-                    self.timer.invalidate()
-                    let alert_title = "Error"
-                    let alert_message = "Could not get GPS location. Check connection..."
-                    app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
-                    self.navigationController?.popViewController(animated: true)
-                }
+                let title = "Error (\(String(describing: error?.code)))"
+                let message = error?.domain
+                app_utils.showDefaultAlert(controller: self, title: title, message: message!)
             }
-        })
+        }
     }
 }

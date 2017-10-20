@@ -25,7 +25,7 @@ class SetupFinishViewController: UIViewController {
     @IBAction func finishAction(_ sender: Any) {
         // Action method to finish process and go to dashboard
         let dashboard_sb = UIStoryboard(name: "dashboard", bundle: nil)
-        let dashboard_vc = dashboard_sb.instantiateViewController(withIdentifier: "dashboard_navigation_controller") as! UINavigationController
+        let dashboard_vc = dashboard_sb.instantiateViewController(withIdentifier: "DashboardNavigationController") as! UINavigationController
         self.present(dashboard_vc, animated: true, completion: nil)
     }
 }

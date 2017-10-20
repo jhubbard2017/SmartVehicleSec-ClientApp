@@ -54,7 +54,7 @@
                                 <rect key="frame" x="103" y="542" width="169" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="14"/>
-                                <state key="normal" title="Create an Account"/>
+                                <state key="normal" title="Create an account"/>
                                 <connections>
                                     <action selector="signupAction:" destination="4tM-Su-z6c" eventType="touchUpInside" id="n1k-79-pqq"/>
                                 </connections>
@@ -102,6 +102,7 @@
                     <connections>
                         <outlet property="email" destination="EWM-SD-Ml8" id="SnI-kF-2Ip"/>
                         <outlet property="password" destination="mH1-Qy-cmT" id="fxh-IM-t8o"/>
+                        <outlet property="touchIDBtn" destination="EQG-V1-p2B" id="o2D-wN-ePW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CCh-5K-z7p" userLabel="First Responder" sceneMemberID="firstResponder"/>

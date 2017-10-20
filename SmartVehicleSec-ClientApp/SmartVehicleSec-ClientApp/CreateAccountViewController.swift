@@ -59,9 +59,12 @@ class CreateAccountViewController: UIViewController, UITextFieldDelegate {
                 api.create_account(firstname: self.firstname.text!, lastname: self.lastname.text!, email: self.email.text!, password: self.password.text!, phone: self.phone.text!, vehicle: self.vehicle.text!, system_id: self.system_id.text!) { error in
                     if (error == nil) {
                         // Login
-                        auth.login(email: auth.email, password: auth.password) { error in
+                        api.login(email: auth_info.email, password: auth_info.password) { error in
                             if (error == nil) {
-                                // Todo: Set up rest of account (Go to next vc)
+                                user_authenticated = true
+                                is_first_authentication = false
+                                let next_vc = self.storyboard?.instantiateViewController(withIdentifier: "SetupContactsViewController") as! SetupContactsViewController
+                                self.present(next_vc, animated: true, completion: nil)
                             } else {
                                 let title = "Error (\(String(describing: error?.code)))"
                                 let message = error?.domain

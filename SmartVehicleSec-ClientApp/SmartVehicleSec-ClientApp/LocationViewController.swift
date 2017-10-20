@@ -29,7 +29,7 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
         self.view.layoutIfNeeded()
         
         self.timer = Timer.scheduledTimer(timeInterval: 1.5, target: self,
-                                          selector: #selector(LocationViewController.get_gps_location),
+                                          selector: #selector(self.get_gps_location),
                                           userInfo: nil, repeats: true)
         self.timer.fire()
     }
@@ -75,35 +75,23 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
     }
     
     func get_gps_location() {
-        print("Got location: ")
-        let url = "/system/location"
-        let data = ["email": auth.email, "password": auth.password] as NSDictionary
-        server_client.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
-            let code = response.value(forKey: "code") as! Int
-            if code == server_client._SUCCESS_REPONSE_CODE {
-                let coordinates = response.value(forKey: "data") as! NSDictionary
-                let latitude = coordinates.value(forKey: "latitude") as! CLLocationDegrees
-                let longitude = coordinates.value(forKey: "longitude") as! CLLocationDegrees
-                print("Got location: \(latitude) \(longitude)")
-                // Update UI
-                DispatchQueue.main.async {
-                    let distance:CLLocationDistance = 500
-                    self.current_location = CLLocationCoordinate2DMake(latitude, longitude)
-                    let region = MKCoordinateRegionMakeWithDistance(self.current_location, distance, distance)
-                    self.mapview.setRegion(region, animated: true)
-                    
-                    self.car_annotation = CarLocation(coordinate: self.current_location)
-                    self.addAnnotations()
-                }
+        api.get_location(email: auth_info.email) { error, location in
+            if (error == nil) {
+                let latitude = location?.value(forKey: "latitude") as! CLLocationDegrees
+                let longitude = location?.value(forKey: "longitude") as! CLLocationDegrees
+                let distance:CLLocationDistance = 500
+                self.current_location = CLLocationCoordinate2DMake(latitude, longitude)
+                let region = MKCoordinateRegionMakeWithDistance(self.current_location, distance, distance)
+                self.mapview.setRegion(region, animated: true)
+
+                self.car_annotation = CarLocation(coordinate: self.current_location)
+                self.addAnnotations()
             } else {
-                // Alert message
-                DispatchQueue.main.async {
-                    let alert_title = "Error"
-                    let alert_message = "Could not get GPS location. Check connection..."
-                    app_utils.showDefaultAlert(controller: self, title: alert_title, message: alert_message)
-                }
+                let title = "Error (\(String(describing: error?.code)))"
+                let message = error?.domain
+                app_utils.showDefaultAlert(controller: self, title: title, message: message!)
             }
-        })
+        }
     }
 
     @IBAction func navigation_to_vehicle_action(_ sender: Any) {

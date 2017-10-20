@@ -27,6 +27,8 @@ enum appLoadingStatus: Int {
 var api = APIHelperMethods()
 var auth_info = AuthInfo()
 var app_utils = AppUtilities()
+var user_authenticated = false
+var is_first_authentication = true
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -65,22 +67,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         self.window = UIWindow(frame: UIScreen.main.bounds)
         var initialViewController: UIViewController!
+        self.load_data()
         
-        if objects.integer(forKey: _LAUNCH_KEY) == appLaunchStatus.firstLaunch.rawValue {
+        if objects.integer(forKey: _LAUNCH_KEY) == appLaunchStatus.firstLaunch.rawValue || (auth_info.host.isEmpty && auth_info.port == 0) {
             // First launch
             let main_sb = UIStoryboard(name: "Main", bundle: nil)
             initialViewController = main_sb.instantiateViewController(withIdentifier: "FirstStartController") as! FirstStartController
             objects.set(appLaunchStatus.notFirstLaunch.rawValue, forKey: _LAUNCH_KEY)
             
         } else if objects.integer(forKey: _LAUNCH_KEY) == appLaunchStatus.notFirstLaunch.rawValue {
-            // Load data
-            self.load_data()
-            
+    
             // Check if app loaded from background and authentication parameters are loaded from user defaults
-            if objects.integer(forKey: _LOADING_KEY) == appLoadingStatus.background.rawValue {
+            if objects.integer(forKey: _LOADING_KEY) == appLoadingStatus.background.rawValue && user_authenticated {
                 // load dashboard (user should be already authenticated on server)
                 let dashboard_sb = UIStoryboard(name: "dashboard", bundle: nil)
-                initialViewController = dashboard_sb.instantiateViewController(withIdentifier: "dashboard_navigation_controller") as! UINavigationController
+                initialViewController = dashboard_sb.instantiateViewController(withIdentifier: "DashboardNavigationController") as! UINavigationController
             } else {
                 // Go to login view controller (User not authenticated)
                 let sb = UIStoryboard(name: "authentication", bundle: nil)
@@ -114,7 +115,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let password = NSKeyedArchiver.archivedData(withRootObject: auth_info.password)
         let host = NSKeyedArchiver.archivedData(withRootObject: auth_info.host)
         let port = NSKeyedArchiver.archivedData(withRootObject: auth_info.port)
-        let enc_array: [Data] = [email, password, host, port]
+        let user_auth = NSKeyedArchiver.archivedData(withRootObject: user_authenticated)
+        let is_first_auth = NSKeyedArchiver.archivedData(withRootObject: is_first_authentication)
+        let enc_array: [Data] = [email, password, host, port, user_auth, is_first_auth]
         UserDefaults.standard.set(enc_array, forKey: self._DATA_KEY)
         UserDefaults.standard.synchronize()
         print("Successfully saved data.")
@@ -127,6 +130,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             auth_info.password = NSKeyedUnarchiver.unarchiveObject(with: data[1] as Data) as! String
             auth_info.host = NSKeyedUnarchiver.unarchiveObject(with: data[2] as Data) as! String
             auth_info.port = NSKeyedUnarchiver.unarchiveObject(with: data[3] as Data) as! Int
+            user_authenticated = NSKeyedUnarchiver.unarchiveObject(with: data[4] as Data) as! Bool
+            is_first_authentication = NSKeyedUnarchiver.unarchiveObject(with: data[5] as Data) as! Bool
             print("Successfully loaded data.")
         }
     }

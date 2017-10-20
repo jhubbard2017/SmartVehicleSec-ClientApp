@@ -5,7 +5,7 @@
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -18,7 +18,7 @@
         <!--Navigation Controller-->
         <scene sceneID="lvJ-aW-ajA">
             <objects>
-                <navigationController storyboardIdentifier="dashboard_navigation_controller" id="pNG-Sb-JJv" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="DashboardNavigationController" id="pNG-Sb-JJv" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="h29-dv-hqs">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>

@@ -68,6 +68,7 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
                 app_utils.start_activity_indicator(view: self.view, text: "")
                 api.logout(email: auth_info.email) { error in
                     if (error == nil) {
+                        user_authenticated = false
                         title = "Success!"
                         message = "Logged out of account."
                         let sb = UIStoryboard(name: "authentication", bundle: nil)
@@ -75,7 +76,7 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
                         self.present(next_vc, animated: true, completion: nil)
                     } else {
                         title = "Error (\(String(describing: error?.code)))"
-                        message = error?.domain
+                        message = (error?.domain)!
                     }
                 }
                 app_utils.showDefaultAlert(controller: self, title: title, message: message)

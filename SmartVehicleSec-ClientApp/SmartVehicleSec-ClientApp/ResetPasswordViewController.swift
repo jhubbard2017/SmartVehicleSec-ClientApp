@@ -31,13 +31,20 @@ class ResetPasswordViewController: UIViewController, UITextFieldDelegate{
         if app_utils.validateInputs(inputs: self.textfieldList) {
             app_utils.start_activity_indicator(view: self.view, text: "")
             api.forgot_password(email: self.email.text!) { error in
-                if (error == nil) {
-                    let next_vc = self.storyboard?.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
-                    self.present(next_vc, animated: true, completion: nil)
-                } else {
-                    let title = "Error (\(String(describing: error?.code)))"
-                    let message = error?.domain
-                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                DispatchQueue.main.async {
+                    app_utils.stop_activity_indicator()
+                    if (error == nil) {
+                        let alert = UIAlertController(title: "Success", message: "Notification Sent. Check your email!", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "Close", style: .default, handler: {(action) in
+                            let next_vc = self.storyboard?.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
+                            self.present(next_vc, animated: true, completion: nil)
+                        }))
+                        self.present(alert, animated: true, completion: nil)
+                    } else {
+                        let title = "Error (\(String(describing: error?.code)))"
+                        let message = error?.domain
+                        app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                    }
                 }
             }
         } else {

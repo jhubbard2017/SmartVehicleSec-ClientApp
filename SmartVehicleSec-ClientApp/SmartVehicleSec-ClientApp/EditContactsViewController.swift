@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EditContactsViewController: UIViewController {
+class EditContactsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var tableview: UITableView!
     
@@ -30,14 +30,16 @@ class EditContactsViewController: UIViewController {
         self.tableview.tableFooterView = UIView()
         app_utils.start_activity_indicator(view: self.view, text: "")
         api.get_contacts(email: auth_info.email) { error, contacts in
-            app_utils.stop_activity_indicator()
-            if (error == nil) {
-                self.contacts = self.convertContactsFromServer(contacts: contacts!)
-                self.tableview.reloadData()
-            } else {
-                let title = "Error (\(String(describing: error?.code)))"
-                let message = error?.domain
-                app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+            DispatchQueue.main.async {
+                app_utils.stop_activity_indicator()
+                if (error == nil) {
+                    self.contacts = self.convertContactsFromServer(contacts: contacts!)
+                    self.tableview.reloadData()
+                } else {
+                    let title = "Error (\(String(describing: error?.code)))"
+                    let message = error?.domain
+                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                }
             }
         }
     }
@@ -157,19 +159,25 @@ class EditContactsViewController: UIViewController {
             app_utils.start_activity_indicator(view: self.view, text: "")
             let contacts = self.convertcontactsForServer()
             api.update_contacts(email: auth_info.email, contacts: contacts) { error in
-                if (error == nil) {
-                    title = "Success!"
-                    message = "Emergency contacts updated."
-                    self.navigationController?.popViewController(animated: true)
-                } else {
-                    title = "Error (\(String(describing: error?.code)))"
-                    message = (error?.domain)!
+                DispatchQueue.main.async {
+                    app_utils.stop_activity_indicator()
+                    if (error == nil) {
+                        let alert = UIAlertController(title: "Success", message: "Emergency Contacts Updated!", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "Close", style: .default, handler: {(action) in
+                            self.navigationController?.popViewController(animated: true)
+                        }))
+                        self.present(alert, animated: true, completion: nil)
+                    } else {
+                        title = "Error (\(String(describing: error?.code)))"
+                        message = (error?.domain)!
+                        app_utils.showDefaultAlert(controller: self, title: title, message: message)
+                    }
                 }
             }
         } else {
             // Inputs not validated. Show alert message
             message = "Please complete all fields for each contact."
+            app_utils.showDefaultAlert(controller: self, title: title, message: message)
         }
-        app_utils.showDefaultAlert(controller: self, title: title, message: message)
     }
 }

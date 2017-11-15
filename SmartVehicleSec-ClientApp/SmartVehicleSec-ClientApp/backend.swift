@@ -338,4 +338,19 @@ class APIHelperMethods {
             }
         })
     }
+    
+    func get_connection(email: String, completion: @escaping (_ error: NSError?, _ connection: NSDictionary?) -> Void) {
+        let url = "/connections/get"
+        let data = ["email": email] as NSDictionary
+        self.send_request(url: url, data: data, method: "POST", completion: {(response: NSDictionary) -> () in
+            let code = response.value(forKey: "code") as! Int
+            if code == self._SUCCESS_REPONSE_CODE {
+                let connection = response.value(forKey: "data") as! NSDictionary
+                completion(nil, connection)
+            } else {
+                let error = NSError(domain: response.value(forKey: "message") as! String, code: self._FAILURE_RESPONSE_CODE, userInfo: nil)
+                completion(error, nil)
+            }
+        })
+    }
 }

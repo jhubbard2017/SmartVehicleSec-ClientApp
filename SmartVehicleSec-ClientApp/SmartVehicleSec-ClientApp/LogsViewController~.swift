@@ -28,16 +28,14 @@ class LogsViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.tableview.tableFooterView = UIView()
         app_utils.start_activity_indicator(view: self.view, text: "Loading Logs")
         api.get_logs(email: auth_info.email) { error, data_logs in
-            DispatchQueue.main.async {
-                app_utils.stop_activity_indicator()
-                if (error == nil) {
-                    self.logs = data_logs!
-                    self.tableview.reloadData()
-                } else {
-                    let title = "Error (\(String(describing: error?.code)))"
-                    let message = error?.domain
-                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
-                }
+            app_utils.stop_activity_indicator()
+            if (error == nil) {
+                self.logs = data_logs!
+                self.tableview.reloadData()
+            } else {
+                let title = "Error (\(String(describing: error?.code)))"
+                let message = error?.domain
+                app_utils.showDefaultAlert(controller: self, title: title, message: message!)
             }
         }
     }

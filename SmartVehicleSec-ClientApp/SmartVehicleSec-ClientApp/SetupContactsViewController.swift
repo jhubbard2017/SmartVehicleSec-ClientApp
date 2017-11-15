@@ -44,14 +44,16 @@ class SetupContactsViewController: UIViewController, UITableViewDelegate, UITabl
             app_utils.start_activity_indicator(view: self.view, text: "")
             let contacts = self.convertcontactsForServer()
             api.add_contacts(email: auth_info.email, contacts: contacts) { error in
-                app_utils.stop_activity_indicator()
-                if (error == nil) {
-                    let next_vc = self.storyboard?.instantiateViewController(withIdentifier: "SetupFinishViewController") as! SetupFinishViewController
-                    self.present(next_vc, animated: true, completion: nil)
-                } else {
-                    let title = "Error (\(String(describing: error?.code)))"
-                    let message = error?.domain
-                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                DispatchQueue.main.async {
+                    app_utils.stop_activity_indicator()
+                    if (error == nil) {
+                        let next_vc = self.storyboard?.instantiateViewController(withIdentifier: "SetupFinishViewController") as! SetupFinishViewController
+                        self.present(next_vc, animated: true, completion: nil)
+                    } else {
+                        let title = "Error (\(String(describing: error?.code)))"
+                        let message = error?.domain
+                        app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                    }
                 }
             }
         } else {

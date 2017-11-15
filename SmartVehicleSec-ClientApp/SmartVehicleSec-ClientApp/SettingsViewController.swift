@@ -67,20 +67,22 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
             alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: {(action) in
                 app_utils.start_activity_indicator(view: self.view, text: "")
                 api.logout(email: auth_info.email) { error in
-                    if (error == nil) {
-                        user_authenticated = false
-                        title = "Success!"
-                        message = "Logged out of account."
-                        let sb = UIStoryboard(name: "authentication", bundle: nil)
-                        next_vc = sb.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
-                        self.present(next_vc, animated: true, completion: nil)
-                    } else {
-                        title = "Error (\(String(describing: error?.code)))"
-                        message = (error?.domain)!
+                    DispatchQueue.main.async {
+                        app_utils.stop_activity_indicator()
+                        if (error == nil) {
+                            user_authenticated = false
+                            let sb = UIStoryboard(name: "authentication", bundle: nil)
+                            next_vc = sb.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
+                            self.present(next_vc, animated: true, completion: nil)
+                        } else {
+                            title = "Error (\(String(describing: error?.code)))"
+                            message = (error?.domain)!
+                            app_utils.showDefaultAlert(controller: self, title: title, message: message)
+                        }
                     }
                 }
-                app_utils.showDefaultAlert(controller: self, title: title, message: message)
             }))
+            self.present(alert, animated: true, completion: nil)
             break
         default:
             break
@@ -90,4 +92,11 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return self.ROW_HEIGHT
     }
+    
+    @IBAction func backToDashboardAction(_ sender: Any) {
+        let sb = UIStoryboard(name: "dashboard", bundle: nil)
+        let next_vc = sb.instantiateViewController(withIdentifier: "DashboardNavigationController") as! UINavigationController
+        self.present(next_vc, animated: true, completion: nil)
+    }
+    
 }

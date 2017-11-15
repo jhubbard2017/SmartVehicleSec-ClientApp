@@ -9,7 +9,7 @@
 import Foundation
 import MapKit
 
-@objc class CarLocation: NSObject {
+class CarLocation: NSObject, MKAnnotation {
     var title: String?
     var coordinate: CLLocationCoordinate2D
     
@@ -18,5 +18,3 @@ import MapKit
         self.title = "My Vehicle"
     }
 }
-
-extension CarLocation: MKAnnotation { }

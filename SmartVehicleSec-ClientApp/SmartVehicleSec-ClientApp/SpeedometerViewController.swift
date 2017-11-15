@@ -46,7 +46,7 @@ class SpeedometerViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         // Stop the background task when user navigates to new view controller
-        print("Stopped getting temperature")
+        print("Stopped getting speedometer data")
         self.timer.invalidate()
     }
     
@@ -67,24 +67,28 @@ class SpeedometerViewController: UIViewController {
     
     func getSpeedometerData() {
         api.get_speedometer(email: auth_info.email) { error, speedometer_data in
-            if (error == nil) {
-                let altitude_data = speedometer_data?.value(forKey: "altitude") as! Float
-                let heading_data = speedometer_data?.value(forKey: "heading") as! Float
-                let climb_data = speedometer_data?.value(forKey: "climb") as! Float
-                
-                var speed_data = speedometer_data?.value(forKey: "speed") as! Float
-                if self.current_unit == speedUnitTypes.kmh.rawValue {
-                    speed_data = speed_data * self.kmh_multiplier
+            DispatchQueue.main.async {
+                if (error == nil) {
+                    let altitude_data = speedometer_data?.value(forKey: "altitude") as! Float
+                    let heading_data = speedometer_data?.value(forKey: "heading") as! Float
+                    let climb_data = speedometer_data?.value(forKey: "climb") as! Float
+                    
+                    var speed_data = speedometer_data?.value(forKey: "speed") as! Float
+                    if self.current_unit == speedUnitTypes.kmh.rawValue {
+                        speed_data = speed_data * self.kmh_multiplier
+                    }
+                    
+                    self.speed.text = String(Int(speed_data))
+                    self.altitude.text = String("\(altitude_data) ft")
+                    self.heading.text = String("\(heading_data) deg")
+                    self.climb.text = String("\(climb_data) ft/min")
+                    print("Got speedometer data")
+                } else {
+                    let title = "Error (\(String(describing: error?.code)))"
+                    let message = error?.domain
+                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                    self.navigationController?.popViewController(animated: true)
                 }
-                
-                self.speed.text = String(Int(speed_data))
-                self.altitude.text = String("\(altitude_data) ft")
-                self.heading.text = String("\(heading_data) deg")
-                self.climb.text = String("\(climb_data) ft/min")
-            } else {
-                let title = "Error (\(String(describing: error?.code)))"
-                let message = error?.domain
-                app_utils.showDefaultAlert(controller: self, title: title, message: message!)
             }
         }
     }

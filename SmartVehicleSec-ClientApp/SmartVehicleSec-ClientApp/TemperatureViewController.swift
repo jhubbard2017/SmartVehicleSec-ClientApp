@@ -62,16 +62,20 @@ class TemperatureViewController: UIViewController {
     
     func getTemperature() {
         api.get_temperature(email: auth_info.email) { error, temperature_data in
-            if (error == nil) {
-                if self.current_unit == unitTypes.fahrenheit.rawValue {
-                    self.temperature.text = String(describing: temperature_data?.value(forKey: "fahrenheit") as! Float)
+            DispatchQueue.main.async {
+                if (error == nil) {
+                    if self.current_unit == unitTypes.fahrenheit.rawValue {
+                        self.temperature.text = String(describing: temperature_data?.value(forKey: "fahrenheit") as! Float)
+                    } else {
+                        self.temperature.text = String(describing: temperature_data?.value(forKey: "celcius") as! Float)
+                    }
+                    print("Got temperature")
                 } else {
-                    self.temperature.text = String(describing: temperature_data?.value(forKey: "celcius") as! Float)
+                    let title = "Error (\(String(describing: error?.code)))"
+                    let message = error?.domain
+                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                    self.navigationController?.popViewController(animated: true)
                 }
-            } else {
-                let title = "Error (\(String(describing: error?.code)))"
-                let message = error?.domain
-                app_utils.showDefaultAlert(controller: self, title: title, message: message!)
             }
         }
     }

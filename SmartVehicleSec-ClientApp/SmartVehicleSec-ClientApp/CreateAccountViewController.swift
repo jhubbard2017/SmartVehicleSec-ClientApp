@@ -60,21 +60,27 @@ class CreateAccountViewController: UIViewController, UITextFieldDelegate {
                     if (error == nil) {
                         // Login
                         api.login(email: auth_info.email, password: auth_info.password) { error in
-                            if (error == nil) {
-                                user_authenticated = true
-                                is_first_authentication = false
-                                let next_vc = self.storyboard?.instantiateViewController(withIdentifier: "SetupContactsViewController") as! SetupContactsViewController
-                                self.present(next_vc, animated: true, completion: nil)
-                            } else {
-                                let title = "Error (\(String(describing: error?.code)))"
-                                let message = error?.domain
-                                app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                            DispatchQueue.main.async {
+                                app_utils.stop_activity_indicator()
+                                if (error == nil) {
+                                    user_authenticated = true
+                                    is_first_authentication = false
+                                    let next_vc = self.storyboard?.instantiateViewController(withIdentifier: "SetupContactsViewController") as!SetupContactsViewController
+                                    self.present(next_vc, animated: true, completion: nil)
+                                } else {
+                                    let title = "Error (\(String(describing: error?.code)))"
+                                    let message = error?.domain
+                                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                                }
                             }
                         }
                     } else {
-                        let title = "Error (\(String(describing: error?.code)))"
-                        let message = error?.domain
-                        app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                        DispatchQueue.main.async {
+                            app_utils.stop_activity_indicator()
+                            let title = "Error (\(String(describing: error?.code)))"
+                            let message = error?.domain
+                            app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                        }
                     }
                 }
             }

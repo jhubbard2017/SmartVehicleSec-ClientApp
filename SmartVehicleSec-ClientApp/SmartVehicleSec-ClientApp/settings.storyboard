@@ -77,7 +77,14 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Settings" id="pgQ-Tc-IH7"/>
+                    <navigationItem key="navigationItem" title="Settings" id="pgQ-Tc-IH7">
+                        <barButtonItem key="backBarButtonItem" title="Back" id="GvT-gx-QTm"/>
+                        <barButtonItem key="leftBarButtonItem" title="Dashboard" id="2oP-ZO-XYs">
+                            <connections>
+                                <action selector="backToDashboardAction:" destination="p1l-aR-ger" id="tyA-q1-cJG"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="tableview" destination="jGB-fb-Zfk" id="CTe-mU-dMD"/>
                     </connections>
@@ -165,8 +172,7 @@
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="14"/>
                                 <state key="normal" title="Change Password"/>
                                 <connections>
-                                    <action selector="changePasswordAction:" destination="nGl-rL-Bch" eventType="touchUpInside" id="ioj-zw-N9E"/>
-                                    <segue destination="YkM-02-qAt" kind="show" id="mHJ-Tk-u4u"/>
+                                    <action selector="changePasswordAction:" destination="nGl-rL-Bch" eventType="touchUpInside" id="X2D-y5-IbD"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -203,21 +209,21 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="04I-wt-oWg">
                                 <rect key="frame" x="16" y="216" width="343" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Verify Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="rHM-OJ-xuA">
                                 <rect key="frame" x="16" y="259" width="343" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IkJ-lw-4R1">
                                 <rect key="frame" x="16" y="581" width="343" height="66"/>
@@ -229,7 +235,6 @@
                                 </state>
                                 <connections>
                                     <action selector="changePasswordAction:" destination="YkM-02-qAt" eventType="touchUpInside" id="VyH-Ls-Sbf"/>
-                                    <action selector="saveAction:" destination="nGl-rL-Bch" eventType="touchUpInside" id="2bR-mM-OGU"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Change your password. Make sure to choose a different password for security reasons." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c8l-KY-aXN">
@@ -353,6 +358,10 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="7DU-KY-4U2" id="gpd-ak-Gqe"/>
+                                    <outlet property="delegate" destination="7DU-KY-4U2" id="VUt-gF-24m"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

@@ -41,18 +41,20 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
         self.view.snapshotView(afterScreenUpdates: true)
         app_utils.start_activity_indicator(view: self.view, text: "")
         api.get_config(email: auth_info.email) { error, config in
-            app_utils.stop_activity_indicator()
-            if (error == nil) {
-                let system_armed = config?.value(forKey: "system_armed") as! Bool
-                if system_armed {
-                    self.updateUI(armed: true)
+            DispatchQueue.main.async {
+                app_utils.stop_activity_indicator()
+                if (error == nil) {
+                    let system_armed = config?.value(forKey: "system_armed") as! Bool
+                    if system_armed {
+                        self.updateUI(armed: true)
+                    } else {
+                        self.updateUI(armed: false)
+                    }
                 } else {
-                    self.updateUI(armed: false)
+                    let title = "Error (\(String(describing: error?.code)))"
+                    let message = error?.domain
+                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
                 }
-            } else {
-                let title = "Error (\(String(describing: error?.code)))"
-                let message = error?.domain
-                app_utils.showDefaultAlert(controller: self, title: title, message: message!)
             }
         }
     }
@@ -77,6 +79,11 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.tableview.deselectRow(at: indexPath, animated: true)
+        if indexPath.row == 5 {
+            let sb = UIStoryboard(name: "settings", bundle: nil)
+            let next_vc = sb.instantiateViewController(withIdentifier: "SettingsNavigationController") as! UINavigationController
+            self.navigationController?.present(next_vc, animated: true, completion: nil)
+        }
     }
     
     @IBAction func system_toggle_action(_ sender: Any) {
@@ -88,23 +95,27 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
         if self.system_armed {
             // Disarm system
             api.disarm_system(email: auth_info.email) { error in
-                if (error == nil) {
-                    self.updateUI(armed: false)
-                } else {
-                    let title = "Error (\(String(describing: error?.code)))"
-                    let message = error?.domain
-                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                DispatchQueue.main.async {
+                    if (error == nil) {
+                        self.updateUI(armed: false)
+                    } else {
+                        let title = "Error (\(String(describing: error?.code)))"
+                        let message = error?.domain
+                        app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                    }
                 }
             }
         } else {
             // Arm sysem
             api.arm_system(email: auth_info.email) { error in
-                if (error == nil) {
-                    self.updateUI(armed: true)
-                } else {
-                    let title = "Error (\(String(describing: error?.code)))"
-                    let message = error?.domain
-                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                DispatchQueue.main.async {
+                    if (error == nil) {
+                        self.updateUI(armed: true)
+                    } else {
+                        let title = "Error (\(String(describing: error?.code)))"
+                        let message = error?.domain
+                        app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                    }
                 }
             }
         }

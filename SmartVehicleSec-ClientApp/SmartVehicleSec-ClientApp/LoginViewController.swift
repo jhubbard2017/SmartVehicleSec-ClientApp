@@ -68,17 +68,19 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     func loginUser(email: String, password: String) {
         api.login(email: email, password: password) { error in
-            app_utils.stop_activity_indicator()
-            if (error == nil) {
-                user_authenticated = true
-                is_first_authentication = false
-                let sb = UIStoryboard(name: "dashboard", bundle: nil)
-                let next_vc = sb.instantiateViewController(withIdentifier: "DashboardNavigationController") as! UINavigationController
-                self.present(next_vc, animated: true, completion: nil)
-            } else {
-                let title = "Error (\(String(describing: error?.code)))"
-                let message = error?.domain
-                app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+            DispatchQueue.main.async {
+                app_utils.stop_activity_indicator()
+                if (error == nil) {
+                    user_authenticated = true
+                    is_first_authentication = false
+                    let sb = UIStoryboard(name: "dashboard", bundle: nil)
+                    let next_vc = sb.instantiateViewController(withIdentifier: "DashboardNavigationController") as! UINavigationController
+                    self.present(next_vc, animated: true, completion: nil)
+                } else {
+                    let title = "Error (\(String(describing: error?.code)))"
+                    let message = error?.domain
+                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                }
             }
         }
     }

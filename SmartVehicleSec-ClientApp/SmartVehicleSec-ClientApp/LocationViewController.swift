@@ -76,20 +76,23 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
     
     func get_gps_location() {
         api.get_location(email: auth_info.email) { error, location in
-            if (error == nil) {
-                let latitude = location?.value(forKey: "latitude") as! CLLocationDegrees
-                let longitude = location?.value(forKey: "longitude") as! CLLocationDegrees
-                let distance:CLLocationDistance = 500
-                self.current_location = CLLocationCoordinate2DMake(latitude, longitude)
-                let region = MKCoordinateRegionMakeWithDistance(self.current_location, distance, distance)
-                self.mapview.setRegion(region, animated: true)
-
-                self.car_annotation = CarLocation(coordinate: self.current_location)
-                self.addAnnotations()
-            } else {
-                let title = "Error (\(String(describing: error?.code)))"
-                let message = error?.domain
-                app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+            DispatchQueue.main.async {
+                if (error == nil) {
+                    let latitude = location?.value(forKey: "latitude") as! CLLocationDegrees
+                    let longitude = location?.value(forKey: "longitude") as! CLLocationDegrees
+                    let distance:CLLocationDistance = 500
+                    self.current_location = CLLocationCoordinate2DMake(latitude, longitude)
+                    let region = MKCoordinateRegionMakeWithDistance(self.current_location, distance, distance)
+                    self.mapview.setRegion(region, animated: true)
+                    self.car_annotation = CarLocation(coordinate: self.current_location)
+                    self.addAnnotations()
+                    print("Got location")
+                } else {
+                    let title = "Error (\(String(describing: error?.code)))"
+                    let message = error?.domain
+                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                    self.navigationController?.popViewController(animated: true)
+                }
             }
         }
     }

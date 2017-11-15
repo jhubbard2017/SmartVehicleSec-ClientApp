@@ -18,10 +18,24 @@ class VideoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.layoutIfNeeded()
-        let url_string = "http://\(auth_info.host):\(auth_info.port)"
-        let url = NSURL(string: url_string)
-        let requestObj = NSURLRequest(url: url! as URL)
-        self.webview.loadRequest(requestObj as URLRequest)
+        
+        app_utils.start_activity_indicator(view: self.view, text: "")
+        api.get_connection(email: auth_info.email) { error, connection in
+            DispatchQueue.main.async {
+                app_utils.stop_activity_indicator()
+                if (error == nil) {
+                    let url_string = "http://\(String(describing: connection?.value(forKey: "host"))):8081"
+                    let url = NSURL(string: url_string)
+                    let requestObj = NSURLRequest(url: url! as URL)
+                    self.webview.loadRequest(requestObj as URLRequest)
+                } else {
+                    let title = "Error (\(String(describing: error?.code)))"
+                    let message = error?.domain
+                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                    // self.navigationController?.popViewController(animated: true)
+                }
+            }
+        }        
     }
 
     override func didReceiveMemoryWarning() {

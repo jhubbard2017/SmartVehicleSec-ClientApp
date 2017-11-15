@@ -108,7 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         self.save_data()
     }
-    
+
     func save_data() {
         /* Saves current app data */
         let email = NSKeyedArchiver.archivedData(withRootObject: auth_info.email)
@@ -122,7 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UserDefaults.standard.synchronize()
         print("Successfully saved data.")
     }
-    
+
     func load_data() {
         /* Loads current data in user defaults */
         if let data: [Data] = UserDefaults.standard.object(forKey: self._DATA_KEY) as? [Data] {

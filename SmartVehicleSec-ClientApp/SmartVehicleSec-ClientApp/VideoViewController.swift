@@ -24,7 +24,9 @@ class VideoViewController: UIViewController {
             DispatchQueue.main.async {
                 app_utils.stop_activity_indicator()
                 if (error == nil) {
-                    let url_string = "http://\(String(describing: connection?.value(forKey: "host"))):8081"
+                    let host = connection?.value(forKey: "host") as! String
+                    let url_string = "http://\(host):8081"
+                    print(url_string)
                     let url = NSURL(string: url_string)
                     let requestObj = NSURLRequest(url: url! as URL)
                     self.webview.loadRequest(requestObj as URLRequest)

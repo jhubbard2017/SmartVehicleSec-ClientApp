@@ -71,10 +71,11 @@ class TemperatureViewController: UIViewController {
                     }
                     print("Got temperature")
                 } else {
-                    let title = "Error (\(String(describing: error?.code)))"
-                    let message = error?.domain
-                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
-                    self.navigationController?.popViewController(animated: true)
+                    self.temperature.text = "--"
+                    // let title = "Error (\(String(describing: error?.code)))"
+                    // let message = error?.domain
+                    // app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                    // self.navigationController?.popViewController(animated: true)
                 }
             }
         }

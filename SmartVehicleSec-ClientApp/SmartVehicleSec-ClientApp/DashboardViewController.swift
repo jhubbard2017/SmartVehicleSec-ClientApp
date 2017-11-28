@@ -94,26 +94,26 @@ class DashboardViewController: UIViewController, UITableViewDelegate, UITableVie
          */
         if self.system_armed {
             // Disarm system
+            self.updateUI(armed: false)
             api.disarm_system(email: auth_info.email) { error in
                 DispatchQueue.main.async {
-                    if (error == nil) {
-                        self.updateUI(armed: false)
-                    } else {
+                    if (error != nil) {
                         let title = "Error (\(String(describing: error?.code)))"
                         let message = error?.domain
+                        self.updateUI(armed: true)
                         app_utils.showDefaultAlert(controller: self, title: title, message: message!)
                     }
                 }
             }
         } else {
             // Arm sysem
+            self.updateUI(armed: true)
             api.arm_system(email: auth_info.email) { error in
                 DispatchQueue.main.async {
-                    if (error == nil) {
-                        self.updateUI(armed: true)
-                    } else {
+                    if (error != nil) {
                         let title = "Error (\(String(describing: error?.code)))"
                         let message = error?.domain
+                        self.updateUI(armed: false)
                         app_utils.showDefaultAlert(controller: self, title: title, message: message!)
                     }
                 }

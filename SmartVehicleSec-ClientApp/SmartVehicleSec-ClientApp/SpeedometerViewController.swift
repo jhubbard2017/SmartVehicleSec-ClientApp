@@ -13,7 +13,6 @@ class SpeedometerViewController: UIViewController {
     @IBOutlet weak var speed: UILabel!
     @IBOutlet weak var unit: UILabel!
     @IBOutlet weak var altitude: UILabel!
-    @IBOutlet weak var heading: UILabel!
     @IBOutlet weak var climb: UILabel!
     @IBOutlet weak var convertBtn: UIButton!
     
@@ -33,7 +32,6 @@ class SpeedometerViewController: UIViewController {
         self.unit.text = "MPH"
         self.speed.text = "0.0"
         self.altitude.text = "0.0 ft"
-        self.heading.text = "0.0 ft"
         self.climb.text = "0.0 ft"
         self.convertBtn.setTitle("Show in KMH", for: UIControlState.normal)
         self.timer.fire()
@@ -70,7 +68,6 @@ class SpeedometerViewController: UIViewController {
             DispatchQueue.main.async {
                 if (error == nil) {
                     let altitude_data = speedometer_data?.value(forKey: "altitude") as! Float
-                    let heading_data = speedometer_data?.value(forKey: "heading") as! Float
                     let climb_data = speedometer_data?.value(forKey: "climb") as! Float
                     
                     var speed_data = speedometer_data?.value(forKey: "speed") as! Float
@@ -80,14 +77,16 @@ class SpeedometerViewController: UIViewController {
                     
                     self.speed.text = String(Int(speed_data))
                     self.altitude.text = String("\(altitude_data) ft")
-                    self.heading.text = String("\(heading_data) deg")
                     self.climb.text = String("\(climb_data) ft/min")
                     print("Got speedometer data")
                 } else {
-                    let title = "Error (\(String(describing: error?.code)))"
-                    let message = error?.domain
-                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
-                    self.navigationController?.popViewController(animated: true)
+                    self.speed.text = "--"
+                    self.altitude.text = "--"
+                    self.climb.text = "--"
+                    // let title = "Error (\(String(describing: error?.code)))"
+                    // let message = error?.domain
+                    // app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                    // self.navigationController?.popViewController(animated: true)
                 }
             }
         }

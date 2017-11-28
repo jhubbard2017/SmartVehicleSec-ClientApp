@@ -88,10 +88,10 @@ class LocationViewController: UIViewController, MKMapViewDelegate {
                     self.addAnnotations()
                     print("Got location")
                 } else {
-                    let title = "Error (\(String(describing: error?.code)))"
-                    let message = error?.domain
-                    app_utils.showDefaultAlert(controller: self, title: title, message: message!)
-                    self.navigationController?.popViewController(animated: true)
+                    // let title = "Error (\(String(describing: error?.code)))"
+                    // let message = error?.domain
+                    // app_utils.showDefaultAlert(controller: self, title: title, message: message!)
+                    // self.navigationController?.popViewController(animated: true)
                 }
             }
         }
